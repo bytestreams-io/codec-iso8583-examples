@@ -3,6 +3,7 @@ package io.bytestreams.codec.iso8583.examples.jpos.cmf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.packager.GenericPackager;
 import org.junit.jupiter.api.Test;
@@ -21,5 +22,16 @@ class CMFMessageTest {
     CMFMessage decoded = CMFMessage.CODEC.decode(new ByteArrayInputStream(packed));
     assertThat(CMFMessage.MTI.get(decoded)).isEqualTo("0100");
     assertThat(CMFMessage.PAN.get(decoded)).isEqualTo("400012345678901");
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    CMFMessage.CODEC.encode(decoded, out);
+    assertThat(out.toByteArray()).isEqualTo(packed);
+
+    ISOMsg reparsed = new ISOMsg();
+    reparsed.setPackager(packager);
+    reparsed.unpack(out.toByteArray());
+
+    assertThat(reparsed.getMTI()).isEqualTo("0100");
+    assertThat(reparsed.getString(2)).isEqualTo("400012345678901");
   }
 }
