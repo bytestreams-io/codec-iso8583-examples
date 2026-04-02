@@ -11,17 +11,20 @@ import io.bytestreams.codec.iso8583.FieldCodecs;
 import io.bytestreams.codec.iso8583.MultiBlockBitmap;
 
 public class CMFMessage extends DataObject implements Bitmapped {
-  public static FieldSpec<CMFMessage, String> MTI = field("mti", Codecs.hex(4));
-  public static FieldSpec<CMFMessage, MultiBlockBitmap> BITMAP =
+  public static final FieldSpec<CMFMessage, String> MTI = field("mti", Codecs.hex(4));
+  public static final FieldSpec<CMFMessage, MultiBlockBitmap> BITMAP =
       field("bitmap", FieldCodecs.multiBlockBitmap(8));
-  static BitmappedFieldSpec<CMFMessage, String> PAN =
+  public static final BitmappedFieldSpec<CMFMessage, String> PAN =
       BitmappedFieldSpec.of(2, field("pan", CMFCodecs.hexr(Codecs.bcdInt(2))));
+  public static final BitmappedFieldSpec<CMFMessage, ProcessingCode> PROCESSING_CODE =
+      BitmappedFieldSpec.of(3, field("processingCode", ProcessingCode.CODEC));
 
-  public static Codec<CMFMessage> CODEC =
+  public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
           .field(MTI)
           .bitmap(BITMAP)
           .dataField(PAN)
+          .dataField(PROCESSING_CODE)
           .build();
 
   public CMFMessage() {
