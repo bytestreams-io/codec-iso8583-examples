@@ -16,12 +16,17 @@ class CMFMessageTest {
     ISOMsg msg = new ISOMsg("0100");
     msg.setPackager(packager);
     msg.set(2, "400012345678901");
+    msg.set(3, "003010");
 
     byte[] packed = msg.pack();
 
     CMFMessage decoded = CMFMessage.CODEC.decode(new ByteArrayInputStream(packed));
     assertThat(CMFMessage.MTI.get(decoded)).isEqualTo("0100");
     assertThat(CMFMessage.PAN.get(decoded)).isEqualTo("400012345678901");
+    ProcessingCode pc = CMFMessage.PROCESSING_CODE.get(decoded);
+    assertThat(pc.getTransactionType()).isEqualTo("00");
+    assertThat(pc.getFromAccount()).isEqualTo("30");
+    assertThat(pc.getToAccount()).isEqualTo("10");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -33,5 +38,6 @@ class CMFMessageTest {
 
     assertThat(reparsed.getMTI()).isEqualTo("0100");
     assertThat(reparsed.getString(2)).isEqualTo("400012345678901");
+    assertThat(reparsed.getString(3)).isEqualTo("003010");
   }
 }
