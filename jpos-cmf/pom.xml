@@ -26,6 +26,12 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jpos</groupId>
+      <artifactId>jpos</artifactId>
+      <version>3.0.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>
