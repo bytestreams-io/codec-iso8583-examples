@@ -15,7 +15,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
   public static final FieldSpec<CMFMessage, MultiBlockBitmap> BITMAP =
       field("bitmap", FieldCodecs.multiBlockBitmap(8));
   public static final BitmappedFieldSpec<CMFMessage, String> PAN =
-      BitmappedFieldSpec.of(2, field("pan", CMFCodecs.hexr(Codecs.bcdInt(2))));
+      BitmappedFieldSpec.of(2, field("pan", new PanCodec()));
   public static final BitmappedFieldSpec<CMFMessage, ProcessingCode> PROCESSING_CODE =
       BitmappedFieldSpec.of(3, field("processingCode", ProcessingCode.CODEC));
 
