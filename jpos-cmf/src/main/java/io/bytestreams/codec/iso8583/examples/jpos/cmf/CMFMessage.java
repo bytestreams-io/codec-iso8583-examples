@@ -19,13 +19,15 @@ public class CMFMessage extends DataObject implements Bitmapped {
   public static final BitmappedFieldSpec<CMFMessage, ProcessingCode> PROCESSING_CODE =
       BitmappedFieldSpec.of(3, field("processingCode", ProcessingCode.CODEC));
   public static final BitmappedFieldSpec<CMFMessage, CurrencyAmount> TRANSACTION_AMOUNT =
-      BitmappedFieldSpec.of(4, field("transactionAmount", CurrencyAmount.CODEC));
+      BitmappedFieldSpec.of(4, field("transactionAmount", CurrencyAmount.codec(16)));
   public static final BitmappedFieldSpec<CMFMessage, CurrencyAmount> RECONCILIATION_AMOUNT =
-      BitmappedFieldSpec.of(5, field("reconciliationAmount", CurrencyAmount.CODEC));
+      BitmappedFieldSpec.of(5, field("reconciliationAmount", CurrencyAmount.codec(16)));
   public static final BitmappedFieldSpec<CMFMessage, CurrencyAmount> CARDHOLDER_BILLING_AMOUNT =
-      BitmappedFieldSpec.of(6, field("cardholderBillingAmount", CurrencyAmount.CODEC));
+      BitmappedFieldSpec.of(6, field("cardholderBillingAmount", CurrencyAmount.codec(16)));
   public static final BitmappedFieldSpec<CMFMessage, TransmissionDateTime> TRANSMISSION_DATE_TIME =
       BitmappedFieldSpec.of(7, field("transmissionDateTime", TransmissionDateTime.CODEC));
+  public static final BitmappedFieldSpec<CMFMessage, CurrencyAmount> CARDHOLDER_BILLING_FEE_AMOUNT =
+      BitmappedFieldSpec.of(8, field("cardholderBillingFeeAmount", CurrencyAmount.codec(12)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -37,6 +39,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(RECONCILIATION_AMOUNT)
           .dataField(CARDHOLDER_BILLING_AMOUNT)
           .dataField(TRANSMISSION_DATE_TIME)
+          .dataField(CARDHOLDER_BILLING_FEE_AMOUNT)
           .build();
 
   public CMFMessage() {
