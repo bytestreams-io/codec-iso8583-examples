@@ -18,6 +18,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(2, field("pan", new PanCodec()));
   public static final BitmappedFieldSpec<CMFMessage, ProcessingCode> PROCESSING_CODE =
       BitmappedFieldSpec.of(3, field("processingCode", ProcessingCode.CODEC));
+  public static final BitmappedFieldSpec<CMFMessage, TransactionAmount> TRANSACTION_AMOUNT =
+      BitmappedFieldSpec.of(4, field("transactionAmount", TransactionAmount.CODEC));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -25,6 +27,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .bitmap(BITMAP)
           .dataField(PAN)
           .dataField(PROCESSING_CODE)
+          .dataField(TRANSACTION_AMOUNT)
           .build();
 
   public CMFMessage() {

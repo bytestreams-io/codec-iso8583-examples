@@ -19,6 +19,7 @@ class CMFMessageTest {
     msg.setPackager(packager);
     msg.set(2, "400012345678901");
     msg.set(3, "003010");
+    msg.set(4, "8402000000001000");
 
     byte[] packed = msg.pack();
 
@@ -29,16 +30,23 @@ class CMFMessageTest {
     assertThat(pc.getTransactionType()).isEqualTo("00");
     assertThat(pc.getFromAccount()).isEqualTo("30");
     assertThat(pc.getToAccount()).isEqualTo("10");
+    TransactionAmount ta = CMFMessage.TRANSACTION_AMOUNT.get(decoded);
+    assertThat(ta.getCurrencyCode()).isEqualTo("840");
+    assertThat(ta.getDecimalPlaces()).isEqualTo(2);
+    assertThat(ta.getAmount()).isEqualTo(1000L);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
     assertThat(inspected)
         .containsEntry("mti", "0100")
-        .hasEntrySatisfying("bitmap", v -> assertThat(v.toString()).isEqualTo("{2, 3}"))
+        .hasEntrySatisfying("bitmap", v -> assertThat(v.toString()).isEqualTo("{2, 3, 4}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry(
             "processingCode",
-            Map.of("transactionType", "00", "fromAccount", "30", "toAccount", "10"));
+            Map.of("transactionType", "00", "fromAccount", "30", "toAccount", "10"))
+        .containsEntry(
+            "transactionAmount",
+            Map.of("currencyCode", "840", "decimalPlaces", 2, "amount", 1000L));
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -51,5 +59,6 @@ class CMFMessageTest {
     assertThat(reparsed.getMTI()).isEqualTo("0100");
     assertThat(reparsed.getString(2)).isEqualTo("400012345678901");
     assertThat(reparsed.getString(3)).isEqualTo("003010");
+    assertThat(reparsed.getString(4)).isEqualTo("8402000000001000");
   }
 }
