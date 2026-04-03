@@ -26,6 +26,7 @@ class CMFMessageTest {
     msg.set(6, "8262000000001200");
     msg.set(7, "0402215430");
     msg.set(8, "840200000500");
+    msg.set(9, "61234567");
 
     byte[] packed = msg.pack();
 
@@ -55,6 +56,9 @@ class CMFMessageTest {
     assertThat(cbfa.getCurrencyCode()).isEqualTo("840");
     assertThat(cbfa.getDecimalPlaces()).isEqualTo(2);
     assertThat(cbfa.getAmount()).isEqualTo(500L);
+    ConversionRate rcr = CMFMessage.RECONCILIATION_CONVERSION_RATE.get(decoded);
+    assertThat(rcr.getScale()).isEqualTo(6);
+    assertThat(rcr.getValue()).isEqualTo(1234567);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -64,16 +68,18 @@ class CMFMessageTest {
     var billingAmountMap = Map.of("currencyCode", "826", "decimalPlaces", 2, "amount", 1200L);
     var transmissionDateTimeMap = Map.of("monthDay", "0402", "hourMinuteSecond", "215430");
     var billingFeeAmountMap = Map.of("currencyCode", "840", "decimalPlaces", 2, "amount", 500L);
+    var reconConvRateMap = Map.of("scale", 6, "value", 1234567);
     assertThat(inspected)
         .containsEntry("mti", "0100")
-        .hasEntrySatisfying("bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8}"))
+        .hasEntrySatisfying("bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
         .containsEntry("reconciliationAmount", reconAmountMap)
         .containsEntry("cardholderBillingAmount", billingAmountMap)
         .containsEntry("transmissionDateTime", transmissionDateTimeMap)
-        .containsEntry("cardholderBillingFeeAmount", billingFeeAmountMap);
+        .containsEntry("cardholderBillingFeeAmount", billingFeeAmountMap)
+        .containsEntry("reconciliationConversionRate", reconConvRateMap);
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -91,5 +97,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(6)).isEqualTo("8262000000001200");
     assertThat(reparsed.getString(7)).isEqualTo("0402215430");
     assertThat(reparsed.getString(8)).isEqualTo("840200000500");
+    assertThat(reparsed.getString(9)).isEqualTo("61234567");
   }
 }
