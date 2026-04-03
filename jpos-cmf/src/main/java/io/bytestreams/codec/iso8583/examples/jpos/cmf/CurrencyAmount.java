@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 public class CurrencyAmount {
-  public static Codec<CurrencyAmount> CODEC = new TransactionAmountCodec();
+  public static final Codec<CurrencyAmount> CODEC = new TransactionAmountCodec();
   private String currencyCode;
   private int decimalPlaces;
   private long amount;

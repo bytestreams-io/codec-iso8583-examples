@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.bytestreams.codec.core.Inspector;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.time.LocalTime;
+import java.time.MonthDay;
 import java.util.Map;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.packager.GenericPackager;
@@ -22,6 +24,7 @@ class CMFMessageTest {
     msg.set(4, "8402000000001000");
     msg.set(5, "9782000000005000");
     msg.set(6, "8262000000001200");
+    msg.set(7, "0402215430");
 
     byte[] packed = msg.pack();
 
@@ -44,6 +47,9 @@ class CMFMessageTest {
     assertThat(cba.getCurrencyCode()).isEqualTo("826");
     assertThat(cba.getDecimalPlaces()).isEqualTo(2);
     assertThat(cba.getAmount()).isEqualTo(1200L);
+    TransmissionDateTime tdt = CMFMessage.TRANSMISSION_DATE_TIME.get(decoded);
+    assertThat(TransmissionDateTime.MONTH_DAY.get(tdt)).isEqualTo(MonthDay.of(4, 2));
+    assertThat(TransmissionDateTime.LOCAL_TIME.get(tdt)).isEqualTo(LocalTime.of(21, 54, 30));
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -51,14 +57,16 @@ class CMFMessageTest {
     var amountMap = Map.of("currencyCode", "840", "decimalPlaces", 2, "amount", 1000L);
     var reconAmountMap = Map.of("currencyCode", "978", "decimalPlaces", 2, "amount", 5000L);
     var billingAmountMap = Map.of("currencyCode", "826", "decimalPlaces", 2, "amount", 1200L);
+    var transmissionDateTimeMap = Map.of("monthDay", "0402", "hourMinuteSecond", "215430");
     assertThat(inspected)
         .containsEntry("mti", "0100")
-        .hasEntrySatisfying("bitmap", v -> assertThat(v.toString()).isEqualTo("{2, 3, 4, 5, 6}"))
+        .hasEntrySatisfying("bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
         .containsEntry("reconciliationAmount", reconAmountMap)
-        .containsEntry("cardholderBillingAmount", billingAmountMap);
+        .containsEntry("cardholderBillingAmount", billingAmountMap)
+        .containsEntry("transmissionDateTime", transmissionDateTimeMap);
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -74,5 +82,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(4)).isEqualTo("8402000000001000");
     assertThat(reparsed.getString(5)).isEqualTo("9782000000005000");
     assertThat(reparsed.getString(6)).isEqualTo("8262000000001200");
+    assertThat(reparsed.getString(7)).isEqualTo("0402215430");
   }
 }
