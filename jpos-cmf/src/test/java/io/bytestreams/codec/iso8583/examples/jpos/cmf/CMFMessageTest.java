@@ -35,7 +35,7 @@ class CMFMessageTest {
     assertThat(inspected)
         .containsEntry("mti", "0100")
         .hasEntrySatisfying("bitmap", v -> assertThat(v.toString()).isEqualTo("{2, 3}"))
-        .containsEntry("pan", "4000123456789010")
+        .containsEntry("pan", "400012******8901")
         .containsEntry(
             "processingCode",
             Map.of("transactionType", "00", "fromAccount", "30", "toAccount", "10"));
