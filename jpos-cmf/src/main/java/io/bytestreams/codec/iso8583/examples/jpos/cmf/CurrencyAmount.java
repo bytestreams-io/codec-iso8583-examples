@@ -9,13 +9,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-public class TransactionAmount {
-  public static Codec<TransactionAmount> CODEC = new TransactionAmountCodec();
+public class CurrencyAmount {
+  public static Codec<CurrencyAmount> CODEC = new TransactionAmountCodec();
   private String currencyCode;
   private int decimalPlaces;
   private long amount;
 
-  public TransactionAmount(String decoded) {
+  public CurrencyAmount(String decoded) {
     currencyCode = decoded.substring(0, 3);
     decimalPlaces = Integer.parseInt(decoded.substring(3, 4));
     amount = Long.parseLong(decoded.substring(4));
@@ -50,22 +50,22 @@ public class TransactionAmount {
   }
 
   public static class TransactionAmountCodec
-      implements Codec<TransactionAmount>, Inspectable<TransactionAmount> {
-    private static final Codec<TransactionAmount> DELEGATE =
-        Codecs.hex(16).xmap(TransactionAmount::new, TransactionAmount::encode);
+      implements Codec<CurrencyAmount>, Inspectable<CurrencyAmount> {
+    private static final Codec<CurrencyAmount> DELEGATE =
+        Codecs.hex(16).xmap(CurrencyAmount::new, CurrencyAmount::encode);
 
     @Override
-    public EncodeResult encode(TransactionAmount value, OutputStream output) throws IOException {
+    public EncodeResult encode(CurrencyAmount value, OutputStream output) throws IOException {
       return DELEGATE.encode(value, output);
     }
 
     @Override
-    public TransactionAmount decode(InputStream input) throws IOException {
+    public CurrencyAmount decode(InputStream input) throws IOException {
       return DELEGATE.decode(input);
     }
 
     @Override
-    public Object inspect(TransactionAmount value) {
+    public Object inspect(CurrencyAmount value) {
       return Map.of(
           "currencyCode",
           value.getCurrencyCode(),
