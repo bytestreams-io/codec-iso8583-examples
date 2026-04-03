@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.util.Map;
 
 public class CurrencyAmount {
-  public static final Codec<CurrencyAmount> CODEC = new TransactionAmountCodec();
   private String currencyCode;
   private int decimalPlaces;
   private long amount;
@@ -21,8 +20,12 @@ public class CurrencyAmount {
     amount = Long.parseLong(decoded.substring(4));
   }
 
-  private String encode() {
-    return String.format("%s%1d%012d", currencyCode, decimalPlaces, amount);
+  public static Codec<CurrencyAmount> codec(int length) {
+    return new CurrencyAmountCodec(length);
+  }
+
+  private String encode(String formatString) {
+    return String.format(formatString, currencyCode, decimalPlaces, amount);
   }
 
   public String getCurrencyCode() {
@@ -49,19 +52,23 @@ public class CurrencyAmount {
     this.amount = amount;
   }
 
-  public static class TransactionAmountCodec
+  private static class CurrencyAmountCodec
       implements Codec<CurrencyAmount>, Inspectable<CurrencyAmount> {
-    private static final Codec<CurrencyAmount> DELEGATE =
-        Codecs.hex(16).xmap(CurrencyAmount::new, CurrencyAmount::encode);
+    private final Codec<CurrencyAmount> delegate;
+
+    public CurrencyAmountCodec(int length) {
+      String format = "%s%1d%0" + (length - 4) + "d";
+      delegate = Codecs.hex(length).xmap(CurrencyAmount::new, amount -> amount.encode(format));
+    }
 
     @Override
     public EncodeResult encode(CurrencyAmount value, OutputStream output) throws IOException {
-      return DELEGATE.encode(value, output);
+      return delegate.encode(value, output);
     }
 
     @Override
     public CurrencyAmount decode(InputStream input) throws IOException {
-      return DELEGATE.decode(input);
+      return delegate.decode(input);
     }
 
     @Override
