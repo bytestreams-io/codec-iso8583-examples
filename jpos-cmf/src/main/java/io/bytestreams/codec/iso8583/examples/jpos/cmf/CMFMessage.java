@@ -1,5 +1,6 @@
 package io.bytestreams.codec.iso8583.examples.jpos.cmf;
 
+import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYMMDD;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYYYMMDDHHMMSS;
 
 import io.bytestreams.codec.core.Codec;
@@ -11,6 +12,7 @@ import io.bytestreams.codec.iso8583.BitmappedCodecBuilder;
 import io.bytestreams.codec.iso8583.BitmappedFieldSpec;
 import io.bytestreams.codec.iso8583.FieldCodecs;
 import io.bytestreams.codec.iso8583.MultiBlockBitmap;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class CMFMessage extends DataObject implements Bitmapped {
@@ -41,6 +43,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(11, field("stan", Codecs.hex(12)));
   public static final BitmappedFieldSpec<CMFMessage, LocalDateTime> LOCAL_TRANSACTION_DATE_TIME =
       BitmappedFieldSpec.of(12, field("localTransactionDateTime", YYYYMMDDHHMMSS));
+  public static final BitmappedFieldSpec<CMFMessage, LocalDate> EFFECTIVE_DATE =
+      BitmappedFieldSpec.of(13, field("effectiveDate", YYMMDD));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -57,6 +61,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(CARDHOLDER_BILLING_CONVERSION_RATE)
           .dataField(STAN)
           .dataField(LOCAL_TRANSACTION_DATE_TIME)
+          .dataField(EFFECTIVE_DATE)
           .build();
 
   public CMFMessage() {
