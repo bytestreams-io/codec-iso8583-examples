@@ -28,6 +28,7 @@ class CMFMessageTest {
     msg.set(8, "840200000500");
     msg.set(9, "61234567");
     msg.set(10, "70987654");
+    msg.set(11, "000000123456");
 
     byte[] packed = msg.pack();
 
@@ -63,6 +64,7 @@ class CMFMessageTest {
     ConversionRate cbcr = CMFMessage.CARDHOLDER_BILLING_CONVERSION_RATE.get(decoded);
     assertThat(cbcr.getScale()).isEqualTo(7);
     assertThat(cbcr.getValue()).isEqualTo(987654);
+    assertThat(CMFMessage.STAN.get(decoded)).isEqualTo("000000123456");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -77,7 +79,7 @@ class CMFMessageTest {
     assertThat(inspected)
         .containsEntry("mti", "0100")
         .hasEntrySatisfying(
-            "bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10}"))
+            "bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -86,7 +88,8 @@ class CMFMessageTest {
         .containsEntry("transmissionDateTime", transmissionDateTimeMap)
         .containsEntry("cardholderBillingFeeAmount", billingFeeAmountMap)
         .containsEntry("reconciliationConversionRate", reconConvRateMap)
-        .containsEntry("cardholderBillingConversionRate", billingConvRateMap);
+        .containsEntry("cardholderBillingConversionRate", billingConvRateMap)
+        .containsEntry("stan", "000000123456");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -106,5 +109,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(8)).isEqualTo("840200000500");
     assertThat(reparsed.getString(9)).isEqualTo("61234567");
     assertThat(reparsed.getString(10)).isEqualTo("70987654");
+    assertThat(reparsed.getString(11)).isEqualTo("000000123456");
   }
 }

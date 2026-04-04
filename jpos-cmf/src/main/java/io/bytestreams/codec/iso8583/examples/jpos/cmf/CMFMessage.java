@@ -34,6 +34,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
   public static final BitmappedFieldSpec<CMFMessage, ConversionRate>
       CARDHOLDER_BILLING_CONVERSION_RATE =
           BitmappedFieldSpec.of(10, field("cardholderBillingConversionRate", ConversionRate.CODEC));
+  public static final BitmappedFieldSpec<CMFMessage, String> STAN =
+      BitmappedFieldSpec.of(11, field("stan", Codecs.hex(12)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -48,6 +50,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(CARDHOLDER_BILLING_FEE_AMOUNT)
           .dataField(RECONCILIATION_CONVERSION_RATE)
           .dataField(CARDHOLDER_BILLING_CONVERSION_RATE)
+          .dataField(STAN)
           .build();
 
   public CMFMessage() {
