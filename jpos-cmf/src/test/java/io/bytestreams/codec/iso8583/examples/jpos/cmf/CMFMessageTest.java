@@ -27,6 +27,7 @@ class CMFMessageTest {
     msg.set(7, "0402215430");
     msg.set(8, "840200000500");
     msg.set(9, "61234567");
+    msg.set(10, "70987654");
 
     byte[] packed = msg.pack();
 
@@ -59,6 +60,9 @@ class CMFMessageTest {
     ConversionRate rcr = CMFMessage.RECONCILIATION_CONVERSION_RATE.get(decoded);
     assertThat(rcr.getScale()).isEqualTo(6);
     assertThat(rcr.getValue()).isEqualTo(1234567);
+    ConversionRate cbcr = CMFMessage.CARDHOLDER_BILLING_CONVERSION_RATE.get(decoded);
+    assertThat(cbcr.getScale()).isEqualTo(7);
+    assertThat(cbcr.getValue()).isEqualTo(987654);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -69,9 +73,11 @@ class CMFMessageTest {
     var transmissionDateTimeMap = Map.of("monthDay", "0402", "hourMinuteSecond", "215430");
     var billingFeeAmountMap = Map.of("currencyCode", "840", "decimalPlaces", 2, "amount", 500L);
     var reconConvRateMap = Map.of("scale", 6, "value", 1234567);
+    var billingConvRateMap = Map.of("scale", 7, "value", 987654);
     assertThat(inspected)
         .containsEntry("mti", "0100")
-        .hasEntrySatisfying("bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9}"))
+        .hasEntrySatisfying(
+            "bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -79,7 +85,8 @@ class CMFMessageTest {
         .containsEntry("cardholderBillingAmount", billingAmountMap)
         .containsEntry("transmissionDateTime", transmissionDateTimeMap)
         .containsEntry("cardholderBillingFeeAmount", billingFeeAmountMap)
-        .containsEntry("reconciliationConversionRate", reconConvRateMap);
+        .containsEntry("reconciliationConversionRate", reconConvRateMap)
+        .containsEntry("cardholderBillingConversionRate", billingConvRateMap);
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -98,5 +105,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(7)).isEqualTo("0402215430");
     assertThat(reparsed.getString(8)).isEqualTo("840200000500");
     assertThat(reparsed.getString(9)).isEqualTo("61234567");
+    assertThat(reparsed.getString(10)).isEqualTo("70987654");
   }
 }
