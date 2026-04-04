@@ -1,5 +1,7 @@
 package io.bytestreams.codec.iso8583.examples.jpos.cmf;
 
+import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYYYMMDDHHMMSS;
+
 import io.bytestreams.codec.core.Codec;
 import io.bytestreams.codec.core.Codecs;
 import io.bytestreams.codec.core.DataObject;
@@ -9,6 +11,7 @@ import io.bytestreams.codec.iso8583.BitmappedCodecBuilder;
 import io.bytestreams.codec.iso8583.BitmappedFieldSpec;
 import io.bytestreams.codec.iso8583.FieldCodecs;
 import io.bytestreams.codec.iso8583.MultiBlockBitmap;
+import java.time.LocalDateTime;
 
 public class CMFMessage extends DataObject implements Bitmapped {
   public static final FieldSpec<CMFMessage, String> MTI = field("mti", Codecs.hex(4));
@@ -36,6 +39,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
           BitmappedFieldSpec.of(10, field("cardholderBillingConversionRate", ConversionRate.CODEC));
   public static final BitmappedFieldSpec<CMFMessage, String> STAN =
       BitmappedFieldSpec.of(11, field("stan", Codecs.hex(12)));
+  public static final BitmappedFieldSpec<CMFMessage, LocalDateTime> LOCAL_TRANSACTION_DATE_TIME =
+      BitmappedFieldSpec.of(12, field("localTransactionDateTime", YYYYMMDDHHMMSS));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -51,6 +56,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(RECONCILIATION_CONVERSION_RATE)
           .dataField(CARDHOLDER_BILLING_CONVERSION_RATE)
           .dataField(STAN)
+          .dataField(LOCAL_TRANSACTION_DATE_TIME)
           .build();
 
   public CMFMessage() {

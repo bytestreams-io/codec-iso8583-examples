@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.bytestreams.codec.core.Inspector;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.util.Map;
@@ -29,6 +30,7 @@ class CMFMessageTest {
     msg.set(9, "61234567");
     msg.set(10, "70987654");
     msg.set(11, "000000123456");
+    msg.set(12, "20260402215430");
 
     byte[] packed = msg.pack();
 
@@ -65,6 +67,8 @@ class CMFMessageTest {
     assertThat(cbcr.getScale()).isEqualTo(7);
     assertThat(cbcr.getValue()).isEqualTo(987654);
     assertThat(CMFMessage.STAN.get(decoded)).isEqualTo("000000123456");
+    assertThat(CMFMessage.LOCAL_TRANSACTION_DATE_TIME.get(decoded))
+        .isEqualTo(LocalDateTime.of(2026, 4, 2, 21, 54, 30));
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -79,7 +83,7 @@ class CMFMessageTest {
     assertThat(inspected)
         .containsEntry("mti", "0100")
         .hasEntrySatisfying(
-            "bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10, 11}"))
+            "bitmap", v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -89,7 +93,8 @@ class CMFMessageTest {
         .containsEntry("cardholderBillingFeeAmount", billingFeeAmountMap)
         .containsEntry("reconciliationConversionRate", reconConvRateMap)
         .containsEntry("cardholderBillingConversionRate", billingConvRateMap)
-        .containsEntry("stan", "000000123456");
+        .containsEntry("stan", "000000123456")
+        .containsEntry("localTransactionDateTime", "20260402215430");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -110,5 +115,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(9)).isEqualTo("61234567");
     assertThat(reparsed.getString(10)).isEqualTo("70987654");
     assertThat(reparsed.getString(11)).isEqualTo("000000123456");
+    assertThat(reparsed.getString(12)).isEqualTo("20260402215430");
   }
 }
