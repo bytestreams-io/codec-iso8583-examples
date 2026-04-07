@@ -1,5 +1,6 @@
 package io.bytestreams.codec.iso8583.examples.jpos.cmf;
 
+import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYMM;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYMMDD;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYYYMMDDHHMMSS;
 
@@ -14,6 +15,7 @@ import io.bytestreams.codec.iso8583.FieldCodecs;
 import io.bytestreams.codec.iso8583.MultiBlockBitmap;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 public class CMFMessage extends DataObject implements Bitmapped {
   public static final FieldSpec<CMFMessage, String> MTI = field("mti", Codecs.hex(4));
@@ -45,6 +47,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(12, field("localTransactionDateTime", YYYYMMDDHHMMSS));
   public static final BitmappedFieldSpec<CMFMessage, LocalDate> EFFECTIVE_DATE =
       BitmappedFieldSpec.of(13, field("effectiveDate", YYMMDD));
+  public static final BitmappedFieldSpec<CMFMessage, YearMonth> EXPIRATION_DATE =
+      BitmappedFieldSpec.of(14, field("expirationDate", YYMM));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -62,6 +66,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(STAN)
           .dataField(LOCAL_TRANSACTION_DATE_TIME)
           .dataField(EFFECTIVE_DATE)
+          .dataField(EXPIRATION_DATE)
           .build();
 
   public CMFMessage() {
