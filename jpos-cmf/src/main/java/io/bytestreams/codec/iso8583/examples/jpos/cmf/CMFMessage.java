@@ -56,6 +56,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(15, field("settlementDate", YYYYMMDD));
   public static final BitmappedFieldSpec<CMFMessage, MonthDay> CONVERSION_DATE =
       BitmappedFieldSpec.of(16, field("conversionDate", MMDD));
+  public static final BitmappedFieldSpec<CMFMessage, MonthDay> CAPTURE_DATE =
+      BitmappedFieldSpec.of(17, field("captureDate", MMDD));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -76,6 +78,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(EXPIRATION_DATE)
           .dataField(SETTLEMENT_DATE)
           .dataField(CONVERSION_DATE)
+          .dataField(CAPTURE_DATE)
           .build();
 
   public CMFMessage() {
