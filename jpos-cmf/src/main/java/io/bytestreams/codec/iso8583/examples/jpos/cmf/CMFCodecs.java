@@ -18,6 +18,8 @@ final class CMFCodecs {
   static final Codec<MonthDay> MMDD = Codecs.hex(4).xmap(temporal("MMdd", MonthDay::from));
   static final Codec<YearMonth> YYMM = Codecs.hex(4).xmap(temporal("yyMM", YearMonth::from));
   static final Codec<LocalDate> YYMMDD = Codecs.hex(6).xmap(temporal("yyMMdd", LocalDate::from));
+  static final Codec<LocalDate> YYYYMMDD =
+      Codecs.hex(8).xmap(temporal("yyyyMMdd", LocalDate::from));
   static final Codec<LocalDateTime> YYYYMMDDHHMMSS =
       Codecs.hex(14).xmap(temporal("yyyyMMddHHmmss", LocalDateTime::from));
 
