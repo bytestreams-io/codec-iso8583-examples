@@ -1,5 +1,6 @@
 package io.bytestreams.codec.iso8583.examples.jpos.cmf;
 
+import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.MMDD;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYMM;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYMMDD;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYYYMMDD;
@@ -16,6 +17,7 @@ import io.bytestreams.codec.iso8583.FieldCodecs;
 import io.bytestreams.codec.iso8583.MultiBlockBitmap;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.MonthDay;
 import java.time.YearMonth;
 
 public class CMFMessage extends DataObject implements Bitmapped {
@@ -52,6 +54,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(14, field("expirationDate", YYMM));
   public static final BitmappedFieldSpec<CMFMessage, LocalDate> SETTLEMENT_DATE =
       BitmappedFieldSpec.of(15, field("settlementDate", YYYYMMDD));
+  public static final BitmappedFieldSpec<CMFMessage, MonthDay> CONVERSION_DATE =
+      BitmappedFieldSpec.of(16, field("conversionDate", MMDD));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -71,6 +75,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(EFFECTIVE_DATE)
           .dataField(EXPIRATION_DATE)
           .dataField(SETTLEMENT_DATE)
+          .dataField(CONVERSION_DATE)
           .build();
 
   public CMFMessage() {

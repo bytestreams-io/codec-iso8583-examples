@@ -36,6 +36,7 @@ class CMFMessageTest {
     msg.set(13, "260410");
     msg.set(14, "2812");
     msg.set(15, "20260405");
+    msg.set(16, "0402");
 
     byte[] packed = msg.pack();
 
@@ -77,6 +78,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.EFFECTIVE_DATE.get(decoded)).isEqualTo(LocalDate.of(2026, 4, 10));
     assertThat(CMFMessage.EXPIRATION_DATE.get(decoded)).isEqualTo(YearMonth.of(2028, 12));
     assertThat(CMFMessage.SETTLEMENT_DATE.get(decoded)).isEqualTo(LocalDate.of(2026, 4, 5));
+    assertThat(CMFMessage.CONVERSION_DATE.get(decoded)).isEqualTo(MonthDay.of(4, 2));
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -92,7 +94,7 @@ class CMFMessageTest {
         .containsEntry("mti", "0100")
         .hasEntrySatisfying(
             "bitmap",
-            v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}"))
+            v -> assertThat(v).hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -106,7 +108,8 @@ class CMFMessageTest {
         .containsEntry("localTransactionDateTime", "20260402215430")
         .containsEntry("effectiveDate", "260410")
         .containsEntry("expirationDate", "2812")
-        .containsEntry("settlementDate", "20260405");
+        .containsEntry("settlementDate", "20260405")
+        .containsEntry("conversionDate", "0402");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -131,5 +134,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(13)).isEqualTo("260410");
     assertThat(reparsed.getString(14)).isEqualTo("2812");
     assertThat(reparsed.getString(15)).isEqualTo("20260405");
+    assertThat(reparsed.getString(16)).isEqualTo("0402");
   }
 }
