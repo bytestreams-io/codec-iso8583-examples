@@ -2,6 +2,7 @@ package io.bytestreams.codec.iso8583.examples.jpos.cmf;
 
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYMM;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYMMDD;
+import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYYYMMDD;
 import static io.bytestreams.codec.iso8583.examples.jpos.cmf.CMFCodecs.YYYYMMDDHHMMSS;
 
 import io.bytestreams.codec.core.Codec;
@@ -49,6 +50,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(13, field("effectiveDate", YYMMDD));
   public static final BitmappedFieldSpec<CMFMessage, YearMonth> EXPIRATION_DATE =
       BitmappedFieldSpec.of(14, field("expirationDate", YYMM));
+  public static final BitmappedFieldSpec<CMFMessage, LocalDate> SETTLEMENT_DATE =
+      BitmappedFieldSpec.of(15, field("settlementDate", YYYYMMDD));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -67,6 +70,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(LOCAL_TRANSACTION_DATE_TIME)
           .dataField(EFFECTIVE_DATE)
           .dataField(EXPIRATION_DATE)
+          .dataField(SETTLEMENT_DATE)
           .build();
 
   public CMFMessage() {
