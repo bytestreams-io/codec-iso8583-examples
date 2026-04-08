@@ -66,6 +66,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
               field(
                   "messageErrorIndicator",
                   Codecs.prefixed(Codecs.bcdInt(3), Codecs.listOf(MessageErrorIndicator.CODEC))));
+  public static final BitmappedFieldSpec<CMFMessage, String> ACQUIRING_INSTITUTION_COUNTRY_CODE =
+      BitmappedFieldSpec.of(19, field("acquiringInstitutionCountryCode", CMFCodecs.hex(3)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -88,6 +90,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(CONVERSION_DATE)
           .dataField(CAPTURE_DATE)
           .dataField(MESSAGE_ERROR_INDICATOR)
+          .dataField(ACQUIRING_INSTITUTION_COUNTRY_CODE)
           .build();
 
   public CMFMessage() {
