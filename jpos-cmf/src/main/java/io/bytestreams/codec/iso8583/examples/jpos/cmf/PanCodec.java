@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class PanCodec implements Codec<String>, Inspectable<String> {
-  private static final Codec<String> DELEGATE = CMFCodecs.hexr(Codecs.bcdInt(2));
+  private static final Codec<String> DELEGATE = CMFCodecs.hex(Codecs.bcdInt(2));
 
   @Override
   public Object inspect(String value) {

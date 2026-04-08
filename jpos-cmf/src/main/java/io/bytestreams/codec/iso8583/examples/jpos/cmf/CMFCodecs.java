@@ -25,9 +25,12 @@ final class CMFCodecs {
 
   private CMFCodecs() {}
 
-  static Codec<String> hexr(Codec<Integer> lengthCodec) {
-    return Codecs.prefixed(
-        lengthCodec, String::length, n -> Codecs.hex(n + (n % 2)).xmap(rightZeroPadded(n)));
+  static Codec<String> hex(int n) {
+    return new RightPaddedHexCodec(n);
+  }
+
+  static Codec<String> hex(Codec<Integer> lengthCodec) {
+    return Codecs.prefixed(lengthCodec, String::length, CMFCodecs::hex);
   }
 
   static <T extends TemporalAccessor> Converter<String, T> temporal(
@@ -42,20 +45,6 @@ final class CMFCodecs {
       @Override
       public String from(T value) {
         return formatter.format(value);
-      }
-    };
-  }
-
-  private static Converter<String, String> rightZeroPadded(int n) {
-    return new Converter<>() {
-      @Override
-      public String to(String s) {
-        return s.substring(0, n);
-      }
-
-      @Override
-      public String from(String s) {
-        return n % 2 != 0 ? s + "0" : s;
       }
     };
   }
