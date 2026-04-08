@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
+import java.util.List;
 
 public class CMFMessage extends DataObject implements Bitmapped {
   public static final FieldSpec<CMFMessage, String> MTI = field("mti", Codecs.hex(4));
@@ -58,6 +59,13 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(16, field("conversionDate", MMDD));
   public static final BitmappedFieldSpec<CMFMessage, MonthDay> CAPTURE_DATE =
       BitmappedFieldSpec.of(17, field("captureDate", MMDD));
+  public static final BitmappedFieldSpec<CMFMessage, List<MessageErrorIndicator>>
+      MESSAGE_ERROR_INDICATOR =
+          BitmappedFieldSpec.of(
+              18,
+              field(
+                  "messageErrorIndicator",
+                  Codecs.prefixed(Codecs.bcdInt(3), Codecs.listOf(MessageErrorIndicator.CODEC))));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -79,6 +87,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(SETTLEMENT_DATE)
           .dataField(CONVERSION_DATE)
           .dataField(CAPTURE_DATE)
+          .dataField(MESSAGE_ERROR_INDICATOR)
           .build();
 
   public CMFMessage() {

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Map;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.packager.GenericPackager;
@@ -38,6 +39,7 @@ class CMFMessageTest {
     msg.set(15, "20260405");
     msg.set(16, "0402");
     msg.set(17, "0403");
+    msg.set(18, "10001004002ABC20002003001DEF");
 
     byte[] packed = msg.pack();
 
@@ -81,6 +83,18 @@ class CMFMessageTest {
     assertThat(CMFMessage.SETTLEMENT_DATE.get(decoded)).isEqualTo(LocalDate.of(2026, 4, 5));
     assertThat(CMFMessage.CONVERSION_DATE.get(decoded)).isEqualTo(MonthDay.of(4, 2));
     assertThat(CMFMessage.CAPTURE_DATE.get(decoded)).isEqualTo(MonthDay.of(4, 3));
+    List<MessageErrorIndicator> mei = CMFMessage.MESSAGE_ERROR_INDICATOR.get(decoded);
+    assertThat(mei).hasSize(2);
+    assertThat(mei.get(0).getErrorSeverity()).isEqualTo("1");
+    assertThat(mei.get(0).getErrorCode()).isEqualTo("0001");
+    assertThat(mei.get(0).getErrorDataElement()).isEqualTo("004");
+    assertThat(mei.get(0).getErrorDataSubelement()).isEqualTo("002");
+    assertThat(mei.get(0).getErrorDataElementValue()).isEqualTo("ABC");
+    assertThat(mei.get(1).getErrorSeverity()).isEqualTo("2");
+    assertThat(mei.get(1).getErrorCode()).isEqualTo("0002");
+    assertThat(mei.get(1).getErrorDataElement()).isEqualTo("003");
+    assertThat(mei.get(1).getErrorDataSubelement()).isEqualTo("001");
+    assertThat(mei.get(1).getErrorDataElementValue()).isEqualTo("DEF");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -98,7 +112,7 @@ class CMFMessageTest {
             "bitmap",
             v ->
                 assertThat(v)
-                    .hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17}"))
+                    .hasToString("{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -114,7 +128,8 @@ class CMFMessageTest {
         .containsEntry("expirationDate", "2812")
         .containsEntry("settlementDate", "20260405")
         .containsEntry("conversionDate", "0402")
-        .containsEntry("captureDate", "0403");
+        .containsEntry("captureDate", "0403")
+        .containsKey("messageErrorIndicator");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -141,5 +156,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(15)).isEqualTo("20260405");
     assertThat(reparsed.getString(16)).isEqualTo("0402");
     assertThat(reparsed.getString(17)).isEqualTo("0403");
+    assertThat(reparsed.getString(18)).isEqualTo("10001004002ABC20002003001DEF");
   }
 }
