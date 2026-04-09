@@ -55,6 +55,7 @@ class CMFMessageTest {
             org.jpos.iso.PosDataCode.POSEnvironment.E_COMMERCE.intValue(),
             org.jpos.iso.PosDataCode.SecurityCharacteristic.CHANNEL_ENCRYPTION.intValue());
     msg.set(22, jposPdc.getBytes());
+    msg.set(23, "001");
 
     byte[] packed = msg.pack();
 
@@ -124,6 +125,7 @@ class CMFMessageTest {
     assertThat(pdc.getPosEnvironment().has(PosEnvironment.E_COMMERCE)).isTrue();
     assertThat(pdc.getSecurityCharacteristic().has(SecurityCharacteristic.CHANNEL_ENCRYPTION))
         .isTrue();
+    assertThat(CMFMessage.CARD_SEQUENCE_NUMBER.get(decoded)).isEqualTo("001");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -143,7 +145,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22}"))
+                            + " 22, 23}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -170,7 +172,8 @@ class CMFMessageTest {
                 "traceIdentifier", "TRACE1234567890",
                 "sequenceNumber", "05",
                 "authenticationToken", "1234"))
-        .containsKey("posDataCode");
+        .containsKey("posDataCode")
+        .containsEntry("cardSequenceNumber", "001");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -206,5 +209,6 @@ class CMFMessageTest {
     assertThat(reparsedTlc.getString(2)).isEqualTo("05");
     assertThat(reparsedTlc.getString(3)).isEqualTo("1234");
     assertThat(reparsed.getBytes(22)).isEqualTo(jposPdc.getBytes());
+    assertThat(reparsed.getString(23)).isEqualTo("001");
   }
 }
