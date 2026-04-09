@@ -42,6 +42,12 @@ class CMFMessageTest {
     msg.set(18, "10001004002ABC20002003001DEF");
     msg.set(19, "840");
     msg.set(20, "826");
+    ISOMsg tlc = new ISOMsg(21);
+    tlc.set(0, "A");
+    tlc.set(1, "TRACE1234567890");
+    tlc.set(2, "05");
+    tlc.set(3, "1234");
+    msg.set(tlc);
 
     byte[] packed = msg.pack();
 
@@ -99,6 +105,11 @@ class CMFMessageTest {
     assertThat(mei.get(1).getErrorDataElementValue()).isEqualTo("DEF");
     assertThat(CMFMessage.ACQUIRING_INSTITUTION_COUNTRY_CODE.get(decoded)).isEqualTo("840");
     assertThat(CMFMessage.PAN_COUNTRY_CODE.get(decoded)).isEqualTo("826");
+    TransactionLifeCycle tlcDecoded = CMFMessage.TRANSACTION_LIFE_CYCLE.get(decoded);
+    assertThat(tlcDecoded.getSupportIndicator()).isEqualTo("A");
+    assertThat(tlcDecoded.getTraceIdentifier()).isEqualTo("TRACE1234567890");
+    assertThat(tlcDecoded.getSequenceNumber()).isEqualTo("05");
+    assertThat(tlcDecoded.getAuthenticationToken()).isEqualTo("1234");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -117,7 +128,7 @@ class CMFMessageTest {
             v ->
                 assertThat(v)
                     .hasToString(
-                        "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}"))
+                        "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -136,7 +147,14 @@ class CMFMessageTest {
         .containsEntry("captureDate", "0403")
         .containsKey("messageErrorIndicator")
         .containsEntry("acquiringInstitutionCountryCode", "840")
-        .containsEntry("panCountryCode", "826");
+        .containsEntry("panCountryCode", "826")
+        .containsEntry(
+            "transactionLifeCycle",
+            Map.of(
+                "supportIndicator", "A",
+                "traceIdentifier", "TRACE1234567890",
+                "sequenceNumber", "05",
+                "authenticationToken", "1234"));
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -166,5 +184,10 @@ class CMFMessageTest {
     assertThat(reparsed.getString(18)).isEqualTo("10001004002ABC20002003001DEF");
     assertThat(reparsed.getString(19)).isEqualTo("840");
     assertThat(reparsed.getString(20)).isEqualTo("826");
+    ISOMsg reparsedTlc = (ISOMsg) reparsed.getComponent(21);
+    assertThat(reparsedTlc.getString(0)).isEqualTo("A");
+    assertThat(reparsedTlc.getString(1)).isEqualTo("TRACE1234567890");
+    assertThat(reparsedTlc.getString(2)).isEqualTo("05");
+    assertThat(reparsedTlc.getString(3)).isEqualTo("1234");
   }
 }
