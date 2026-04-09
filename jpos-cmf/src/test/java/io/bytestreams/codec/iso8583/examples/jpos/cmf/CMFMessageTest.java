@@ -41,6 +41,7 @@ class CMFMessageTest {
     msg.set(17, "0403");
     msg.set(18, "10001004002ABC20002003001DEF");
     msg.set(19, "840");
+    msg.set(20, "826");
 
     byte[] packed = msg.pack();
 
@@ -97,6 +98,7 @@ class CMFMessageTest {
     assertThat(mei.get(1).getErrorDataSubelement()).isEqualTo("001");
     assertThat(mei.get(1).getErrorDataElementValue()).isEqualTo("DEF");
     assertThat(CMFMessage.ACQUIRING_INSTITUTION_COUNTRY_CODE.get(decoded)).isEqualTo("840");
+    assertThat(CMFMessage.PAN_COUNTRY_CODE.get(decoded)).isEqualTo("826");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -115,7 +117,7 @@ class CMFMessageTest {
             v ->
                 assertThat(v)
                     .hasToString(
-                        "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}"))
+                        "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -133,7 +135,8 @@ class CMFMessageTest {
         .containsEntry("conversionDate", "0402")
         .containsEntry("captureDate", "0403")
         .containsKey("messageErrorIndicator")
-        .containsEntry("acquiringInstitutionCountryCode", "840");
+        .containsEntry("acquiringInstitutionCountryCode", "840")
+        .containsEntry("panCountryCode", "826");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -162,5 +165,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(17)).isEqualTo("0403");
     assertThat(reparsed.getString(18)).isEqualTo("10001004002ABC20002003001DEF");
     assertThat(reparsed.getString(19)).isEqualTo("840");
+    assertThat(reparsed.getString(20)).isEqualTo("826");
   }
 }
