@@ -57,6 +57,7 @@ class CMFMessageTest {
     msg.set(22, jposPdc.getBytes());
     msg.set(23, "001");
     msg.set(24, "100");
+    msg.set(25, "1403");
 
     byte[] packed = msg.pack();
 
@@ -128,6 +129,7 @@ class CMFMessageTest {
         .isTrue();
     assertThat(CMFMessage.CARD_SEQUENCE_NUMBER.get(decoded)).isEqualTo("001");
     assertThat(CMFMessage.FUNCTION_CODE.get(decoded)).isEqualTo("100");
+    assertThat(CMFMessage.MESSAGE_REASON_CODE.get(decoded)).isEqualTo("1403");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -147,7 +149,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22, 23, 24}"))
+                            + " 22, 23, 24, 25}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -176,7 +178,8 @@ class CMFMessageTest {
                 "authenticationToken", "1234"))
         .containsKey("posDataCode")
         .containsEntry("cardSequenceNumber", "001")
-        .containsEntry("functionCode", "100");
+        .containsEntry("functionCode", "100")
+        .containsEntry("messageReasonCode", "1403");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -214,5 +217,6 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(22)).isEqualTo(jposPdc.getBytes());
     assertThat(reparsed.getString(23)).isEqualTo("001");
     assertThat(reparsed.getString(24)).isEqualTo("100");
+    assertThat(reparsed.getString(25)).isEqualTo("1403");
   }
 }
