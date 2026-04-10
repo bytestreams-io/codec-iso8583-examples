@@ -77,6 +77,10 @@ class CMFMessageTest {
     msg.set(posCapMsg);
     msg.set(28, "20260406");
     msg.set(29, "001");
+    ISOMsg amountsOriginalMsg = new ISOMsg(30);
+    amountsOriginalMsg.set(0, "8402000000001000");
+    amountsOriginalMsg.set(1, "9782000000005000");
+    msg.set(amountsOriginalMsg);
 
     byte[] packed = msg.pack();
 
@@ -167,6 +171,16 @@ class CMFMessageTest {
     assertThat(PosCapability.PIN_INPUT_LENGTH.get(posCap)).isEqualTo(4);
     assertThat(CMFMessage.RECONCILIATION_DATE.get(decoded)).isEqualTo(LocalDate.of(2026, 4, 6));
     assertThat(CMFMessage.RECONCILIATION_INDICATOR.get(decoded)).isEqualTo("001");
+    AmountsOriginal ao = CMFMessage.AMOUNTS_ORIGINAL.get(decoded);
+    CurrencyAmount replacementAmount = AmountsOriginal.REPLACEMENT_AMOUNT.get(ao);
+    assertThat(replacementAmount.getCurrencyCode()).isEqualTo("840");
+    assertThat(replacementAmount.getDecimalPlaces()).isEqualTo(2);
+    assertThat(replacementAmount.getAmount()).isEqualTo(1000L);
+    CurrencyAmount replacementReconAmount =
+        AmountsOriginal.REPLACEMENT_RECONCILIATION_AMOUNT.get(ao);
+    assertThat(replacementReconAmount.getCurrencyCode()).isEqualTo("978");
+    assertThat(replacementReconAmount.getDecimalPlaces()).isEqualTo(2);
+    assertThat(replacementReconAmount.getAmount()).isEqualTo(5000L);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -186,7 +200,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22, 23, 24, 25, 26, 27, 28, 29}"))
+                            + " 22, 23, 24, 25, 26, 27, 28, 29, 30}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -220,7 +234,8 @@ class CMFMessageTest {
         .containsEntry("merchantCategoryCode", "5411")
         .containsKey("posCapability")
         .containsEntry("reconciliationDate", "20260406")
-        .containsEntry("reconciliationIndicator", "001");
+        .containsEntry("reconciliationIndicator", "001")
+        .containsKey("amountsOriginal");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -273,5 +288,8 @@ class CMFMessageTest {
     assertThat(reparsedPosCap.getBytes(9)).isEqualTo(new byte[] {0x04});
     assertThat(reparsed.getString(28)).isEqualTo("20260406");
     assertThat(reparsed.getString(29)).isEqualTo("001");
+    ISOMsg reparsedAo = (ISOMsg) reparsed.getComponent(30);
+    assertThat(reparsedAo.getString(0)).isEqualTo("8402000000001000");
+    assertThat(reparsedAo.getString(1)).isEqualTo("9782000000005000");
   }
 }
