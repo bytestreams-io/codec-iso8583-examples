@@ -87,6 +87,7 @@ class CMFMessageTest {
     msg.set(34, new byte[] {0x01, 0x02, 0x03});
     msg.set(35, "4000123456789012=2612101");
     msg.set(36, "TRACK3TESTDATA");
+    msg.set(37, "REF123456789");
 
     byte[] packed = msg.pack();
 
@@ -195,6 +196,7 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {0x01, 0x02, 0x03});
     assertThat(CMFMessage.TRACK2_DATA.get(decoded)).isEqualTo("4000123456789012=2612101");
     assertThat(CMFMessage.TRACK3_DATA.get(decoded)).isEqualTo("TRACK3TESTDATA");
+    assertThat(CMFMessage.RETRIEVAL_REFERENCE_NUMBER.get(decoded)).isEqualTo("REF123456789");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -214,7 +216,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36}"))
+                            + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -255,7 +257,8 @@ class CMFMessageTest {
         .containsEntry("forwardingInstitutionIdCode", "987654321")
         .containsKey("electronicCommerceData")
         .containsEntry("track2Data", "4000123456789012=2612101")
-        .containsEntry("track3Data", "TRACK3TESTDATA");
+        .containsEntry("track3Data", "TRACK3TESTDATA")
+        .containsEntry("retrievalReferenceNumber", "REF123456789");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -317,5 +320,6 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(34)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
     assertThat(reparsed.getString(35)).isEqualTo("4000123456789012=2612101");
     assertThat(reparsed.getString(36)).isEqualTo("TRACK3TESTDATA");
+    assertThat(reparsed.getString(37)).isEqualTo("REF123456789");
   }
 }
