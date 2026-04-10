@@ -75,6 +75,7 @@ class CMFMessageTest {
     posCapMsg.set(8, "N");
     posCapMsg.set(9, new byte[] {0x04});
     msg.set(posCapMsg);
+    msg.set(28, "20260406");
 
     byte[] packed = msg.pack();
 
@@ -163,6 +164,7 @@ class CMFMessageTest {
     assertThat(PosCapability.TRACK3_REWRITE_CAPABILITY.get(posCap)).isEqualTo("Y");
     assertThat(PosCapability.CARD_CAPTURE_CAPABILITY.get(posCap)).isEqualTo("N");
     assertThat(PosCapability.PIN_INPUT_LENGTH.get(posCap)).isEqualTo(4);
+    assertThat(CMFMessage.RECONCILIATION_DATE.get(decoded)).isEqualTo(LocalDate.of(2026, 4, 6));
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -182,7 +184,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22, 23, 24, 25, 26, 27}"))
+                            + " 22, 23, 24, 25, 26, 27, 28}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -214,7 +216,8 @@ class CMFMessageTest {
         .containsEntry("functionCode", "100")
         .containsEntry("messageReasonCode", "1403")
         .containsEntry("merchantCategoryCode", "5411")
-        .containsKey("posCapability");
+        .containsKey("posCapability")
+        .containsEntry("reconciliationDate", "20260406");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -265,5 +268,6 @@ class CMFMessageTest {
     assertThat(reparsedPosCap.getString(7)).isEqualTo("Y");
     assertThat(reparsedPosCap.getString(8)).isEqualTo("N");
     assertThat(reparsedPosCap.getBytes(9)).isEqualTo(new byte[] {0x04});
+    assertThat(reparsed.getString(28)).isEqualTo("20260406");
   }
 }
