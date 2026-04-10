@@ -84,6 +84,7 @@ class CMFMessageTest {
     msg.set(31, "12345678901234567890123");
     msg.set(32, "123456789");
     msg.set(33, "987654321");
+    msg.set(34, new byte[] {0x01, 0x02, 0x03});
 
     byte[] packed = msg.pack();
 
@@ -188,6 +189,8 @@ class CMFMessageTest {
         .isEqualTo("12345678901234567890123");
     assertThat(CMFMessage.ACQUIRER_INSTITUTION_ID_CODE.get(decoded)).isEqualTo("123456789");
     assertThat(CMFMessage.FORWARDING_INSTITUTION_ID_CODE.get(decoded)).isEqualTo("987654321");
+    assertThat(CMFMessage.ELECTRONIC_COMMERCE_DATA.get(decoded))
+        .isEqualTo(new byte[] {0x01, 0x02, 0x03});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -207,7 +210,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33}"))
+                            + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -245,7 +248,8 @@ class CMFMessageTest {
         .containsKey("amountsOriginal")
         .containsEntry("acquirerReferenceNumber", "12345678901234567890123")
         .containsEntry("acquirerInstitutionIdCode", "123456789")
-        .containsEntry("forwardingInstitutionIdCode", "987654321");
+        .containsEntry("forwardingInstitutionIdCode", "987654321")
+        .containsKey("electronicCommerceData");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -304,5 +308,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(31)).isEqualTo("12345678901234567890123");
     assertThat(reparsed.getString(32)).isEqualTo("123456789");
     assertThat(reparsed.getString(33)).isEqualTo("987654321");
+    assertThat(reparsed.getBytes(34)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
   }
 }
