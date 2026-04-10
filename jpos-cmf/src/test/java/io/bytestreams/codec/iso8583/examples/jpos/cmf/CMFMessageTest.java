@@ -59,6 +59,22 @@ class CMFMessageTest {
     msg.set(24, "100");
     msg.set(25, "1403");
     msg.set(26, "5411");
+    org.jpos.iso.PosCapability jposPosCapability =
+        new org.jpos.iso.PosCapability(
+            org.jpos.iso.PosCapability.ReadingCapability.ICC.intValue(),
+            org.jpos.iso.PosCapability.VerificationCapability.ONLINE_PIN.intValue());
+    ISOMsg posCapMsg = new ISOMsg(27);
+    posCapMsg.set(0, jposPosCapability.getBytes());
+    posCapMsg.set(1, "6");
+    posCapMsg.set(2, "200");
+    posCapMsg.set(3, "200");
+    posCapMsg.set(4, "100");
+    posCapMsg.set(5, "100");
+    posCapMsg.set(6, "000");
+    posCapMsg.set(7, "Y");
+    posCapMsg.set(8, "N");
+    posCapMsg.set(9, new byte[] {0x04});
+    msg.set(posCapMsg);
 
     byte[] packed = msg.pack();
 
@@ -132,6 +148,21 @@ class CMFMessageTest {
     assertThat(CMFMessage.FUNCTION_CODE.get(decoded)).isEqualTo("100");
     assertThat(CMFMessage.MESSAGE_REASON_CODE.get(decoded)).isEqualTo("1403");
     assertThat(CMFMessage.MERCHANT_CATEGORY_CODE.get(decoded)).isEqualTo("5411");
+    PosCapability posCap = CMFMessage.POS_CAPABILITY.get(decoded);
+    assertThat(posCap.getReadingCapability().has(ReadingCapability.ICC)).isTrue();
+    assertThat(posCap.getReadingCapability().has(ReadingCapability.MAGNETIC_STRIPE)).isFalse();
+    assertThat(posCap.getVerificationCapability().has(VerificationCapability.ONLINE_PIN)).isTrue();
+    assertThat(posCap.getVerificationCapability().has(VerificationCapability.MANUAL_SIGNATURE))
+        .isFalse();
+    assertThat(PosCapability.APPROVAL_CODE_LENGTH.get(posCap)).isEqualTo(6);
+    assertThat(PosCapability.CARDHOLDER_RECEIPT_DATA_LENGTH.get(posCap)).isEqualTo(200);
+    assertThat(PosCapability.CARD_ACCEPTOR_RECEIPT_DATA_LENGTH.get(posCap)).isEqualTo(200);
+    assertThat(PosCapability.CARDHOLDER_DISPLAY_DATA_LENGTH.get(posCap)).isEqualTo(100);
+    assertThat(PosCapability.CARD_ACCEPTOR_DISPLAY_DATA_LENGTH.get(posCap)).isEqualTo(100);
+    assertThat(PosCapability.ICC_SCRIPT_DATA_LENGTH.get(posCap)).isEqualTo(0);
+    assertThat(PosCapability.TRACK3_REWRITE_CAPABILITY.get(posCap)).isEqualTo("Y");
+    assertThat(PosCapability.CARD_CAPTURE_CAPABILITY.get(posCap)).isEqualTo("N");
+    assertThat(PosCapability.PIN_INPUT_LENGTH.get(posCap)).isEqualTo(4);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -151,7 +182,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22, 23, 24, 25, 26}"))
+                            + " 22, 23, 24, 25, 26, 27}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -182,7 +213,8 @@ class CMFMessageTest {
         .containsEntry("cardSequenceNumber", "001")
         .containsEntry("functionCode", "100")
         .containsEntry("messageReasonCode", "1403")
-        .containsEntry("merchantCategoryCode", "5411");
+        .containsEntry("merchantCategoryCode", "5411")
+        .containsKey("posCapability");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -222,5 +254,16 @@ class CMFMessageTest {
     assertThat(reparsed.getString(24)).isEqualTo("100");
     assertThat(reparsed.getString(25)).isEqualTo("1403");
     assertThat(reparsed.getString(26)).isEqualTo("5411");
+    ISOMsg reparsedPosCap = (ISOMsg) reparsed.getComponent(27);
+    assertThat(reparsedPosCap.getBytes(0)).isEqualTo(jposPosCapability.getBytes());
+    assertThat(reparsedPosCap.getString(1)).isEqualTo("6");
+    assertThat(reparsedPosCap.getString(2)).isEqualTo("200");
+    assertThat(reparsedPosCap.getString(3)).isEqualTo("200");
+    assertThat(reparsedPosCap.getString(4)).isEqualTo("100");
+    assertThat(reparsedPosCap.getString(5)).isEqualTo("100");
+    assertThat(reparsedPosCap.getString(6)).isEqualTo("000");
+    assertThat(reparsedPosCap.getString(7)).isEqualTo("Y");
+    assertThat(reparsedPosCap.getString(8)).isEqualTo("N");
+    assertThat(reparsedPosCap.getBytes(9)).isEqualTo(new byte[] {0x04});
   }
 }
