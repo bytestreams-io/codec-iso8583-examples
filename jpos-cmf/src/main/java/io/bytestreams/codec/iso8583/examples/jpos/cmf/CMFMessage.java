@@ -86,6 +86,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(27, field("posCapability", PosCapability.CODEC));
   public static final BitmappedFieldSpec<CMFMessage, LocalDate> RECONCILIATION_DATE =
       BitmappedFieldSpec.of(28, field("reconciliationDate", YYYYMMDD));
+  public static final BitmappedFieldSpec<CMFMessage, String> RECONCILIATION_INDICATOR =
+      BitmappedFieldSpec.of(29, field("reconciliationIndicator", CMFCodecs.hex(3)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -118,6 +120,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(MERCHANT_CATEGORY_CODE)
           .dataField(POS_CAPABILITY)
           .dataField(RECONCILIATION_DATE)
+          .dataField(RECONCILIATION_INDICATOR)
           .build();
 
   public CMFMessage() {
