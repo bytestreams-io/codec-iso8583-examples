@@ -82,6 +82,7 @@ class CMFMessageTest {
     amountsOriginalMsg.set(1, "9782000000005000");
     msg.set(amountsOriginalMsg);
     msg.set(31, "12345678901234567890123");
+    msg.set(32, "123456789");
 
     byte[] packed = msg.pack();
 
@@ -184,6 +185,7 @@ class CMFMessageTest {
     assertThat(replacementReconAmount.getAmount()).isEqualTo(5000L);
     assertThat(CMFMessage.ACQUIRER_REFERENCE_NUMBER.get(decoded))
         .isEqualTo("12345678901234567890123");
+    assertThat(CMFMessage.ACQUIRER_INSTITUTION_ID_CODE.get(decoded)).isEqualTo("123456789");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -203,7 +205,7 @@ class CMFMessageTest {
                 assertThat(v)
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
-                            + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31}"))
+                            + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -239,7 +241,8 @@ class CMFMessageTest {
         .containsEntry("reconciliationDate", "20260406")
         .containsEntry("reconciliationIndicator", "001")
         .containsKey("amountsOriginal")
-        .containsEntry("acquirerReferenceNumber", "12345678901234567890123");
+        .containsEntry("acquirerReferenceNumber", "12345678901234567890123")
+        .containsEntry("acquirerInstitutionIdCode", "123456789");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -296,5 +299,6 @@ class CMFMessageTest {
     assertThat(reparsedAo.getString(0)).isEqualTo("8402000000001000");
     assertThat(reparsedAo.getString(1)).isEqualTo("9782000000005000");
     assertThat(reparsed.getString(31)).isEqualTo("12345678901234567890123");
+    assertThat(reparsed.getString(32)).isEqualTo("123456789");
   }
 }
