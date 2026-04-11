@@ -106,6 +106,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(36, field("track3Data", Codecs.ascii(Codecs.bcdInt(3))));
   public static final BitmappedFieldSpec<CMFMessage, String> RETRIEVAL_REFERENCE_NUMBER =
       BitmappedFieldSpec.of(37, field("retrievalReferenceNumber", Codecs.ascii(12)));
+  public static final BitmappedFieldSpec<CMFMessage, String> APPROVAL_CODE =
+      BitmappedFieldSpec.of(38, field("approvalCode", Codecs.ascii(6)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -147,6 +149,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(TRACK2_DATA)
           .dataField(TRACK3_DATA)
           .dataField(RETRIEVAL_REFERENCE_NUMBER)
+          .dataField(APPROVAL_CODE)
           .build();
 
   public CMFMessage() {
