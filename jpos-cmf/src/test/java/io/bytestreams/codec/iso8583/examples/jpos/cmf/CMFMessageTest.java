@@ -92,6 +92,7 @@ class CMFMessageTest {
     msg.set(39, "0500");
     msg.set(40, "101");
     msg.set(41, "TERM0001        ");
+    msg.set(42, "MERCHANT123456789");
 
     byte[] packed = msg.pack();
 
@@ -205,6 +206,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.ACTION_CODE.get(decoded)).isEqualTo("0500");
     assertThat(CMFMessage.SERVICE_CODE.get(decoded)).isEqualTo("101");
     assertThat(CMFMessage.CARD_ACCEPTOR_TERMINAL_ID.get(decoded)).isEqualTo("TERM0001        ");
+    assertThat(CMFMessage.CARD_ACCEPTOR_ID_CODE.get(decoded)).isEqualTo("MERCHANT123456789");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -225,7 +227,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40, 41}"))
+                            + " 38, 39, 40, 41, 42}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -271,7 +273,8 @@ class CMFMessageTest {
         .containsEntry("approvalCode", "ABC123")
         .containsEntry("actionCode", "0500")
         .containsEntry("serviceCode", "101")
-        .containsEntry("cardAcceptorTerminalId", "TERM0001        ");
+        .containsEntry("cardAcceptorTerminalId", "TERM0001        ")
+        .containsEntry("cardAcceptorIdCode", "MERCHANT123456789");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -338,5 +341,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(39)).isEqualTo("0500");
     assertThat(reparsed.getString(40)).isEqualTo("101");
     assertThat(reparsed.getString(41)).isEqualTo("TERM0001        ");
+    assertThat(reparsed.getString(42)).isEqualTo("MERCHANT123456789");
   }
 }
