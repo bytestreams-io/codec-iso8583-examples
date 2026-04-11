@@ -116,6 +116,13 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(41, field("cardAcceptorTerminalId", Codecs.ascii(16)));
   public static final BitmappedFieldSpec<CMFMessage, String> CARD_ACCEPTOR_ID_CODE =
       BitmappedFieldSpec.of(42, field("cardAcceptorIdCode", Codecs.ascii(Codecs.bcdInt(2))));
+  public static final BitmappedFieldSpec<CMFMessage, CardAcceptorNameLocation>
+      CARD_ACCEPTOR_NAME_LOCATION =
+          BitmappedFieldSpec.of(
+              43,
+              field(
+                  "cardAcceptorNameLocation",
+                  Codecs.prefixed(Codecs.bcdInt(4), CardAcceptorNameLocation.CODEC)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -162,6 +169,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(SERVICE_CODE)
           .dataField(CARD_ACCEPTOR_TERMINAL_ID)
           .dataField(CARD_ACCEPTOR_ID_CODE)
+          .dataField(CARD_ACCEPTOR_NAME_LOCATION)
           .build();
 
   public CMFMessage() {

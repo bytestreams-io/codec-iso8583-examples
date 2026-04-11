@@ -93,6 +93,12 @@ class CMFMessageTest {
     msg.set(40, "101");
     msg.set(41, "TERM0001        ");
     msg.set(42, "MERCHANT123456789");
+    ISOMsg calMsg = new ISOMsg(43);
+    calMsg.set(2, "My Store");
+    calMsg.set(4, "Springfield");
+    calMsg.set(7, "840");
+    calMsg.set(12, "store@example.com");
+    msg.set(calMsg);
 
     byte[] packed = msg.pack();
 
@@ -207,6 +213,11 @@ class CMFMessageTest {
     assertThat(CMFMessage.SERVICE_CODE.get(decoded)).isEqualTo("101");
     assertThat(CMFMessage.CARD_ACCEPTOR_TERMINAL_ID.get(decoded)).isEqualTo("TERM0001        ");
     assertThat(CMFMessage.CARD_ACCEPTOR_ID_CODE.get(decoded)).isEqualTo("MERCHANT123456789");
+    CardAcceptorNameLocation cal = CMFMessage.CARD_ACCEPTOR_NAME_LOCATION.get(decoded);
+    assertThat(cal.getName()).isEqualTo("My Store");
+    assertThat(cal.getCity()).isEqualTo("Springfield");
+    assertThat(cal.getCountryCode()).isEqualTo("840");
+    assertThat(CardAcceptorNameLocation.EMAIL.get(cal)).isEqualTo("store@example.com");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -227,7 +238,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40, 41, 42}"))
+                            + " 38, 39, 40, 41, 42, 43}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -274,7 +285,8 @@ class CMFMessageTest {
         .containsEntry("actionCode", "0500")
         .containsEntry("serviceCode", "101")
         .containsEntry("cardAcceptorTerminalId", "TERM0001        ")
-        .containsEntry("cardAcceptorIdCode", "MERCHANT123456789");
+        .containsEntry("cardAcceptorIdCode", "MERCHANT123456789")
+        .containsKey("cardAcceptorNameLocation");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -342,5 +354,10 @@ class CMFMessageTest {
     assertThat(reparsed.getString(40)).isEqualTo("101");
     assertThat(reparsed.getString(41)).isEqualTo("TERM0001        ");
     assertThat(reparsed.getString(42)).isEqualTo("MERCHANT123456789");
+    ISOMsg reparsedCal = (ISOMsg) reparsed.getComponent(43);
+    assertThat(reparsedCal.getString(2)).isEqualTo("My Store");
+    assertThat(reparsedCal.getString(4)).isEqualTo("Springfield");
+    assertThat(reparsedCal.getString(7)).isEqualTo("840");
+    assertThat(reparsedCal.getString(12)).isEqualTo("store@example.com");
   }
 }
