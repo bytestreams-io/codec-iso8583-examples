@@ -91,6 +91,7 @@ class CMFMessageTest {
     msg.set(38, "ABC123");
     msg.set(39, "0500");
     msg.set(40, "101");
+    msg.set(41, "TERM0001        ");
 
     byte[] packed = msg.pack();
 
@@ -203,6 +204,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.APPROVAL_CODE.get(decoded)).isEqualTo("ABC123");
     assertThat(CMFMessage.ACTION_CODE.get(decoded)).isEqualTo("0500");
     assertThat(CMFMessage.SERVICE_CODE.get(decoded)).isEqualTo("101");
+    assertThat(CMFMessage.CARD_ACCEPTOR_TERMINAL_ID.get(decoded)).isEqualTo("TERM0001        ");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -223,7 +225,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40}"))
+                            + " 38, 39, 40, 41}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -268,7 +270,8 @@ class CMFMessageTest {
         .containsEntry("retrievalReferenceNumber", "REF123456789")
         .containsEntry("approvalCode", "ABC123")
         .containsEntry("actionCode", "0500")
-        .containsEntry("serviceCode", "101");
+        .containsEntry("serviceCode", "101")
+        .containsEntry("cardAcceptorTerminalId", "TERM0001        ");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -334,5 +337,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(38)).isEqualTo("ABC123");
     assertThat(reparsed.getString(39)).isEqualTo("0500");
     assertThat(reparsed.getString(40)).isEqualTo("101");
+    assertThat(reparsed.getString(41)).isEqualTo("TERM0001        ");
   }
 }
