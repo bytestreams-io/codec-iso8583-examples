@@ -168,6 +168,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(63, field("reserved63", Codecs.ascii(Codecs.bcdInt(3))));
   public static final BitmappedFieldSpec<CMFMessage, byte[]> MESSAGE_AUTHENTICATION_CODE =
       BitmappedFieldSpec.of(64, field("messageAuthenticationCode", Codecs.binary(4)));
+  // DE-065 is skipped: bit 65 is the bitmap extension indicator for the third 8-byte block
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
