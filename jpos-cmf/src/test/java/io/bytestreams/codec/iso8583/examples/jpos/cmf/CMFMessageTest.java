@@ -104,6 +104,7 @@ class CMFMessageTest {
     msg.set(46, "FEESDATA");
     msg.set(47, "NATIONALDATA");
     msg.set(48, "PRIVATEDATA");
+    msg.set(50, new byte[] {0x0A, 0x0B, 0x0C});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -244,6 +245,7 @@ class CMFMessageTest {
     assertThat(vd.getCardholderBillingStreetAddress())
         .isEqualTo("1234 MAIN STREET                        ");
     assertThat(vd.getAddressVerificationResultCode()).isEqualTo("Y");
+    assertThat(CMFMessage.RESERVED_50.get(decoded)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -264,7 +266,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49}"))
+                            + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -318,7 +320,8 @@ class CMFMessageTest {
         .containsEntry("amountsFees", "FEESDATA")
         .containsEntry("additionalDataNational", "NATIONALDATA")
         .containsEntry("additionalDataPrivate", "PRIVATEDATA")
-        .containsKey("verificationData");
+        .containsKey("verificationData")
+        .containsKey("reserved50");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -402,5 +405,6 @@ class CMFMessageTest {
     assertThat(reparsedVd.getString(4)).isEqualTo("12345     ");
     assertThat(reparsedVd.getString(5)).isEqualTo("1234 MAIN STREET                        ");
     assertThat(reparsedVd.getString(6)).isEqualTo("Y");
+    assertThat(reparsed.getBytes(50)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C});
   }
 }
