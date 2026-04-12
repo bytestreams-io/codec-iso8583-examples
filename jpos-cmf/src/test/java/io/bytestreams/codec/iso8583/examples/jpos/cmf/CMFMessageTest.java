@@ -103,6 +103,7 @@ class CMFMessageTest {
     msg.set(45, "%B4000123456789012^CARDHOLDER/TEST^2612101");
     msg.set(46, "FEESDATA");
     msg.set(47, "NATIONALDATA");
+    msg.set(48, "PRIVATEDATA");
 
     byte[] packed = msg.pack();
 
@@ -228,6 +229,7 @@ class CMFMessageTest {
         .isEqualTo("%B4000123456789012^CARDHOLDER/TEST^2612101");
     assertThat(CMFMessage.AMOUNTS_FEES.get(decoded)).isEqualTo("FEESDATA");
     assertThat(CMFMessage.ADDITIONAL_DATA_NATIONAL.get(decoded)).isEqualTo("NATIONALDATA");
+    assertThat(CMFMessage.ADDITIONAL_DATA_PRIVATE.get(decoded)).isEqualTo("PRIVATEDATA");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -248,7 +250,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47}"))
+                            + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -300,7 +302,8 @@ class CMFMessageTest {
         .containsKey("additionalResponseData")
         .containsEntry("track1Data", "%B4000123456789012^CARDHOLDER/TEST^2612101")
         .containsEntry("amountsFees", "FEESDATA")
-        .containsEntry("additionalDataNational", "NATIONALDATA");
+        .containsEntry("additionalDataNational", "NATIONALDATA")
+        .containsEntry("additionalDataPrivate", "PRIVATEDATA");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -377,5 +380,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(45)).isEqualTo("%B4000123456789012^CARDHOLDER/TEST^2612101");
     assertThat(reparsed.getString(46)).isEqualTo("FEESDATA");
     assertThat(reparsed.getString(47)).isEqualTo("NATIONALDATA");
+    assertThat(reparsed.getString(48)).isEqualTo("PRIVATEDATA");
   }
 }
