@@ -151,6 +151,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(55, field("icSystemRelatedData", Codecs.binary(Codecs.bcdInt(4))));
   public static final BitmappedFieldSpec<CMFMessage, String> ORIGINAL_DATA_ELEMENTS =
       BitmappedFieldSpec.of(56, field("originalDataElements", CMFCodecs.hex(Codecs.bcdInt(2))));
+  public static final BitmappedFieldSpec<CMFMessage, String> AUTHORIZATION_LIFE_CYCLE_CODE =
+      BitmappedFieldSpec.of(57, field("authorizationLifeCycleCode", CMFCodecs.hex(3)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -211,6 +213,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(AMOUNTS_ADDITIONAL)
           .dataField(IC_SYSTEM_RELATED_DATA)
           .dataField(ORIGINAL_DATA_ELEMENTS)
+          .dataField(AUTHORIZATION_LIFE_CYCLE_CODE)
           .build();
 
   public CMFMessage() {

@@ -112,6 +112,7 @@ class CMFMessageTest {
     msg.set(
         55, new byte[] {(byte) 0x9F, 0x26, 0x08, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
     msg.set(56, "01009999999999999901234567890");
+    msg.set(57, "001");
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -264,6 +265,7 @@ class CMFMessageTest {
             new byte[] {(byte) 0x9F, 0x26, 0x08, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
     assertThat(CMFMessage.ORIGINAL_DATA_ELEMENTS.get(decoded))
         .isEqualTo("01009999999999999901234567890");
+    assertThat(CMFMessage.AUTHORIZATION_LIFE_CYCLE_CODE.get(decoded)).isEqualTo("001");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -285,7 +287,7 @@ class CMFMessageTest {
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,"
-                            + " 54, 55, 56}"))
+                            + " 54, 55, 56, 57}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -346,7 +348,8 @@ class CMFMessageTest {
         .containsKey("securityRelatedControlInformation")
         .containsEntry("amountsAdditional", "ADDITIONALAMOUNTS")
         .containsKey("icSystemRelatedData")
-        .containsEntry("originalDataElements", "01009999999999999901234567890");
+        .containsEntry("originalDataElements", "01009999999999999901234567890")
+        .containsEntry("authorizationLifeCycleCode", "001");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -440,5 +443,6 @@ class CMFMessageTest {
         .isEqualTo(
             new byte[] {(byte) 0x9F, 0x26, 0x08, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
     assertThat(reparsed.getString(56)).isEqualTo("01009999999999999901234567890");
+    assertThat(reparsed.getString(57)).isEqualTo("001");
   }
 }
