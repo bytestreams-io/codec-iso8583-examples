@@ -100,6 +100,7 @@ class CMFMessageTest {
     calMsg.set(12, "store@example.com");
     msg.set(calMsg);
     msg.set(44, new byte[] {0x01, 0x02, 0x03, 0x04});
+    msg.set(45, "%B4000123456789012^CARDHOLDER/TEST^2612101");
 
     byte[] packed = msg.pack();
 
@@ -221,6 +222,8 @@ class CMFMessageTest {
     assertThat(CardAcceptorNameLocation.EMAIL.get(cal)).isEqualTo("store@example.com");
     assertThat(CMFMessage.ADDITIONAL_RESPONSE_DATA.get(decoded))
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
+    assertThat(CMFMessage.TRACK1_DATA.get(decoded))
+        .isEqualTo("%B4000123456789012^CARDHOLDER/TEST^2612101");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -241,7 +244,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40, 41, 42, 43, 44}"))
+                            + " 38, 39, 40, 41, 42, 43, 44, 45}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -290,7 +293,8 @@ class CMFMessageTest {
         .containsEntry("cardAcceptorTerminalId", "TERM0001        ")
         .containsEntry("cardAcceptorIdCode", "MERCHANT123456789")
         .containsKey("cardAcceptorNameLocation")
-        .containsKey("additionalResponseData");
+        .containsKey("additionalResponseData")
+        .containsEntry("track1Data", "%B4000123456789012^CARDHOLDER/TEST^2612101");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -364,5 +368,6 @@ class CMFMessageTest {
     assertThat(reparsedCal.getString(7)).isEqualTo("840");
     assertThat(reparsedCal.getString(12)).isEqualTo("store@example.com");
     assertThat(reparsed.getBytes(44)).isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
+    assertThat(reparsed.getString(45)).isEqualTo("%B4000123456789012^CARDHOLDER/TEST^2612101");
   }
 }
