@@ -107,6 +107,7 @@ class CMFMessageTest {
     msg.set(50, new byte[] {0x0A, 0x0B, 0x0C});
     msg.set(51, new byte[] {0x0D, 0x0E, 0x0F});
     msg.set(52, new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
+    msg.set(53, new byte[] {0x11, 0x22, 0x33});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -251,6 +252,8 @@ class CMFMessageTest {
     assertThat(CMFMessage.RESERVED_51.get(decoded)).isEqualTo(new byte[] {0x0D, 0x0E, 0x0F});
     assertThat(CMFMessage.PIN_DATA.get(decoded))
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
+    assertThat(CMFMessage.SECURITY_RELATED_CONTROL_INFORMATION.get(decoded))
+        .isEqualTo(new byte[] {0x11, 0x22, 0x33});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -271,7 +274,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52}"))
+                            + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -328,7 +331,8 @@ class CMFMessageTest {
         .containsKey("verificationData")
         .containsKey("reserved50")
         .containsKey("reserved51")
-        .containsKey("pinData");
+        .containsKey("pinData")
+        .containsKey("securityRelatedControlInformation");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -416,5 +420,6 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(51)).isEqualTo(new byte[] {0x0D, 0x0E, 0x0F});
     assertThat(reparsed.getBytes(52))
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
+    assertThat(reparsed.getBytes(53)).isEqualTo(new byte[] {0x11, 0x22, 0x33});
   }
 }
