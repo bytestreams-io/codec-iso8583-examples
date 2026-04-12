@@ -114,6 +114,7 @@ class CMFMessageTest {
     msg.set(56, "01009999999999999901234567890");
     msg.set(57, "001");
     msg.set(58, "12345678901");
+    msg.set(59, "TRANSPORTDATA");
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -269,6 +270,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.AUTHORIZATION_LIFE_CYCLE_CODE.get(decoded)).isEqualTo("001");
     assertThat(CMFMessage.AUTHORIZING_AGENT_INSTITUTION_ID_CODE.get(decoded))
         .isEqualTo("12345678901");
+    assertThat(CMFMessage.TRANSPORT_DATA.get(decoded)).isEqualTo("TRANSPORTDATA");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -290,7 +292,7 @@ class CMFMessageTest {
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,"
-                            + " 54, 55, 56, 57, 58}"))
+                            + " 54, 55, 56, 57, 58, 59}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -353,7 +355,8 @@ class CMFMessageTest {
         .containsKey("icSystemRelatedData")
         .containsEntry("originalDataElements", "01009999999999999901234567890")
         .containsEntry("authorizationLifeCycleCode", "001")
-        .containsEntry("authorizingAgentInstitutionIdCode", "12345678901");
+        .containsEntry("authorizingAgentInstitutionIdCode", "12345678901")
+        .containsEntry("transportData", "TRANSPORTDATA");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -449,5 +452,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(56)).isEqualTo("01009999999999999901234567890");
     assertThat(reparsed.getString(57)).isEqualTo("001");
     assertThat(reparsed.getString(58)).isEqualTo("12345678901");
+    assertThat(reparsed.getString(59)).isEqualTo("TRANSPORTDATA");
   }
 }
