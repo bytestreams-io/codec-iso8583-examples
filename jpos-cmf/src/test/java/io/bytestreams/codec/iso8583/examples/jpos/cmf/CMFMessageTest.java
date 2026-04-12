@@ -120,7 +120,6 @@ class CMFMessageTest {
     msg.set(62, "PRIVATEDATA62");
     msg.set(63, "PRIVATEDATA63");
     msg.set(64, new byte[] {0x01, 0x02, 0x03, 0x04});
-    msg.set(65, new byte[] {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte) 0x88});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -283,8 +282,6 @@ class CMFMessageTest {
     assertThat(CMFMessage.RESERVED_63.get(decoded)).isEqualTo("PRIVATEDATA63");
     assertThat(CMFMessage.MESSAGE_AUTHENTICATION_CODE.get(decoded))
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
-    assertThat(CMFMessage.RESERVED_65.get(decoded))
-        .isEqualTo(new byte[] {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte) 0x88});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -306,7 +303,7 @@ class CMFMessageTest {
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,"
-                            + " 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65}"))
+                            + " 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -375,8 +372,7 @@ class CMFMessageTest {
         .containsEntry("reserved61", "NATIONALDATA61")
         .containsEntry("reserved62", "PRIVATEDATA62")
         .containsEntry("reserved63", "PRIVATEDATA63")
-        .containsKey("messageAuthenticationCode")
-        .containsKey("reserved65");
+        .containsKey("messageAuthenticationCode");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -478,7 +474,5 @@ class CMFMessageTest {
     assertThat(reparsed.getString(62)).isEqualTo("PRIVATEDATA62");
     assertThat(reparsed.getString(63)).isEqualTo("PRIVATEDATA63");
     assertThat(reparsed.getBytes(64)).isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
-    assertThat(reparsed.getBytes(65))
-        .isEqualTo(new byte[] {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte) 0x88});
   }
 }
