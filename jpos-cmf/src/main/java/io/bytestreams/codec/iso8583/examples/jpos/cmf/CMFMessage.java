@@ -171,6 +171,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
   // DE-065 is skipped: bit 65 is the bitmap extension indicator for the third 8-byte block
   public static final BitmappedFieldSpec<CMFMessage, String> AMOUNTS_ORIGINAL_FEES =
       BitmappedFieldSpec.of(66, field("amountsOriginalFees", Codecs.ascii(Codecs.bcdInt(3))));
+  public static final BitmappedFieldSpec<CMFMessage, String> EXTENDED_PAYMENT_DATA =
+      BitmappedFieldSpec.of(67, field("extendedPaymentData", CMFCodecs.hex(2)));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -240,6 +242,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(RESERVED_63)
           .dataField(MESSAGE_AUTHENTICATION_CODE)
           .dataField(AMOUNTS_ORIGINAL_FEES)
+          .dataField(EXTENDED_PAYMENT_DATA)
           .build();
 
   public CMFMessage() {
