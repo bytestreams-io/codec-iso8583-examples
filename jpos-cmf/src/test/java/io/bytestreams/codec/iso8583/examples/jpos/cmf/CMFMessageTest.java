@@ -117,6 +117,7 @@ class CMFMessageTest {
     msg.set(59, "TRANSPORTDATA");
     msg.set(60, "NATIONALDATA60");
     msg.set(61, "NATIONALDATA61");
+    msg.set(62, "PRIVATEDATA62");
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -275,6 +276,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.TRANSPORT_DATA.get(decoded)).isEqualTo("TRANSPORTDATA");
     assertThat(CMFMessage.RESERVED_60.get(decoded)).isEqualTo("NATIONALDATA60");
     assertThat(CMFMessage.RESERVED_61.get(decoded)).isEqualTo("NATIONALDATA61");
+    assertThat(CMFMessage.RESERVED_62.get(decoded)).isEqualTo("PRIVATEDATA62");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -296,7 +298,7 @@ class CMFMessageTest {
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,"
-                            + " 54, 55, 56, 57, 58, 59, 60, 61}"))
+                            + " 54, 55, 56, 57, 58, 59, 60, 61, 62}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -362,7 +364,8 @@ class CMFMessageTest {
         .containsEntry("authorizingAgentInstitutionIdCode", "12345678901")
         .containsEntry("transportData", "TRANSPORTDATA")
         .containsEntry("reserved60", "NATIONALDATA60")
-        .containsEntry("reserved61", "NATIONALDATA61");
+        .containsEntry("reserved61", "NATIONALDATA61")
+        .containsEntry("reserved62", "PRIVATEDATA62");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -461,5 +464,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(59)).isEqualTo("TRANSPORTDATA");
     assertThat(reparsed.getString(60)).isEqualTo("NATIONALDATA60");
     assertThat(reparsed.getString(61)).isEqualTo("NATIONALDATA61");
+    assertThat(reparsed.getString(62)).isEqualTo("PRIVATEDATA62");
   }
 }
