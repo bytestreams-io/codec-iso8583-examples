@@ -101,6 +101,7 @@ class CMFMessageTest {
     msg.set(calMsg);
     msg.set(44, new byte[] {0x01, 0x02, 0x03, 0x04});
     msg.set(45, "%B4000123456789012^CARDHOLDER/TEST^2612101");
+    msg.set(46, "FEESDATA");
 
     byte[] packed = msg.pack();
 
@@ -224,6 +225,7 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
     assertThat(CMFMessage.TRACK1_DATA.get(decoded))
         .isEqualTo("%B4000123456789012^CARDHOLDER/TEST^2612101");
+    assertThat(CMFMessage.AMOUNTS_FEES.get(decoded)).isEqualTo("FEESDATA");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -244,7 +246,7 @@ class CMFMessageTest {
                     .hasToString(
                         "{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,"
                             + " 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
-                            + " 38, 39, 40, 41, 42, 43, 44, 45}"))
+                            + " 38, 39, 40, 41, 42, 43, 44, 45, 46}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -294,7 +296,8 @@ class CMFMessageTest {
         .containsEntry("cardAcceptorIdCode", "MERCHANT123456789")
         .containsKey("cardAcceptorNameLocation")
         .containsKey("additionalResponseData")
-        .containsEntry("track1Data", "%B4000123456789012^CARDHOLDER/TEST^2612101");
+        .containsEntry("track1Data", "%B4000123456789012^CARDHOLDER/TEST^2612101")
+        .containsEntry("amountsFees", "FEESDATA");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -369,5 +372,6 @@ class CMFMessageTest {
     assertThat(reparsedCal.getString(12)).isEqualTo("store@example.com");
     assertThat(reparsed.getBytes(44)).isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
     assertThat(reparsed.getString(45)).isEqualTo("%B4000123456789012^CARDHOLDER/TEST^2612101");
+    assertThat(reparsed.getString(46)).isEqualTo("FEESDATA");
   }
 }
