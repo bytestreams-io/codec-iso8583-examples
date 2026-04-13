@@ -122,6 +122,7 @@ class CMFMessageTest {
     msg.set(64, new byte[] {0x01, 0x02, 0x03, 0x04});
     msg.set(66, "ORIGINALFEESDATA");
     msg.set(67, "12");
+    msg.set(68, "BATCHCTL0");
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -286,6 +287,7 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
     assertThat(CMFMessage.AMOUNTS_ORIGINAL_FEES.get(decoded)).isEqualTo("ORIGINALFEESDATA");
     assertThat(CMFMessage.EXTENDED_PAYMENT_DATA.get(decoded)).isEqualTo("12");
+    assertThat(CMFMessage.BATCH_FILE_TRANSFER_MESSAGE_CONTROL.get(decoded)).isEqualTo("BATCHCTL0");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -307,7 +309,7 @@ class CMFMessageTest {
                         "{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,"
                             + " 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36,"
                             + " 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,"
-                            + " 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67}"))
+                            + " 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -378,7 +380,8 @@ class CMFMessageTest {
         .containsEntry("reserved63", "PRIVATEDATA63")
         .containsKey("messageAuthenticationCode")
         .containsEntry("amountsOriginalFees", "ORIGINALFEESDATA")
-        .containsEntry("extendedPaymentData", "12");
+        .containsEntry("extendedPaymentData", "12")
+        .containsEntry("batchFileTransferMessageControl", "BATCHCTL0");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -482,5 +485,6 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(64)).isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
     assertThat(reparsed.getString(66)).isEqualTo("ORIGINALFEESDATA");
     assertThat(reparsed.getString(67)).isEqualTo("12");
+    assertThat(reparsed.getString(68)).isEqualTo("BATCHCTL0");
   }
 }
