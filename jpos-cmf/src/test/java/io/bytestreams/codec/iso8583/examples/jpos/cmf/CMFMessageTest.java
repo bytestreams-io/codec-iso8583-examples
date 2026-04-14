@@ -128,6 +128,20 @@ class CMFMessageTest {
     msg.set(71, new byte[] {0x01, 0x02, 0x03});
     msg.set(72, new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
     msg.set(73, "20260101");
+    ISOMsg rdpMsg = new ISOMsg(74);
+    rdpMsg.set(0, "0000000000001000");
+    rdpMsg.set(1, "0000000005");
+    rdpMsg.set(2, "0000000000000200");
+    rdpMsg.set(3, "0000000001");
+    rdpMsg.set(4, "0000000000000050");
+    rdpMsg.set(5, "0000000002");
+    rdpMsg.set(6, "0000000000002000");
+    rdpMsg.set(7, "0000000010");
+    rdpMsg.set(8, "0000000000000400");
+    rdpMsg.set(9, "0000000003");
+    rdpMsg.set(10, "0000000000000100");
+    rdpMsg.set(11, "0000000004");
+    msg.set(rdpMsg);
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -300,6 +314,19 @@ class CMFMessageTest {
     assertThat(CMFMessage.RESERVED_71.get(decoded)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
     assertThat(CMFMessage.DATA_RECORD.get(decoded)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
     assertThat(CMFMessage.DATE_ACTION.get(decoded)).isEqualTo(LocalDate.of(2026, 1, 1));
+    ReconciliationDataPrimary rdp = CMFMessage.RECONCILIATION_DATA_PRIMARY.get(decoded);
+    assertThat(rdp.getCreditsAmount()).isEqualTo(1000L);
+    assertThat(rdp.getCreditsNumber()).isEqualTo(5L);
+    assertThat(rdp.getCreditsChargebackAmount()).isEqualTo(200L);
+    assertThat(rdp.getCreditsChargebackNumber()).isEqualTo(1L);
+    assertThat(rdp.getCreditsReversalAmount()).isEqualTo(50L);
+    assertThat(rdp.getCreditsReversalNumber()).isEqualTo(2L);
+    assertThat(rdp.getDebitsAmount()).isEqualTo(2000L);
+    assertThat(rdp.getDebitsNumber()).isEqualTo(10L);
+    assertThat(rdp.getDebitsChargebackAmount()).isEqualTo(400L);
+    assertThat(rdp.getDebitsChargebackNumber()).isEqualTo(3L);
+    assertThat(rdp.getDebitsReversalAmount()).isEqualTo(100L);
+    assertThat(rdp.getDebitsReversalNumber()).isEqualTo(4L);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -322,7 +349,7 @@ class CMFMessageTest {
                             + " 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
-                            + " 72, 73}"))
+                            + " 72, 73, 74}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -399,7 +426,8 @@ class CMFMessageTest {
         .containsEntry("fileTransferDescriptionData", "123456789012345678")
         .containsEntry("reserved71", new byte[] {0x01, 0x02, 0x03})
         .containsEntry("dataRecord", new byte[] {0x0A, 0x0B, 0x0C, 0x0D})
-        .containsEntry("dateAction", "20260101");
+        .containsEntry("dateAction", "20260101")
+        .containsKey("reconciliationDataPrimary");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -509,5 +537,18 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(71)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
     assertThat(reparsed.getBytes(72)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
     assertThat(reparsed.getString(73)).isEqualTo("20260101");
+    ISOMsg reparsedRdp = (ISOMsg) reparsed.getComponent(74);
+    assertThat(reparsedRdp.getString(0)).isEqualTo("0000000000001000");
+    assertThat(reparsedRdp.getString(1)).isEqualTo("0000000005");
+    assertThat(reparsedRdp.getString(2)).isEqualTo("0000000000000200");
+    assertThat(reparsedRdp.getString(3)).isEqualTo("0000000001");
+    assertThat(reparsedRdp.getString(4)).isEqualTo("0000000000000050");
+    assertThat(reparsedRdp.getString(5)).isEqualTo("0000000002");
+    assertThat(reparsedRdp.getString(6)).isEqualTo("0000000000002000");
+    assertThat(reparsedRdp.getString(7)).isEqualTo("0000000010");
+    assertThat(reparsedRdp.getString(8)).isEqualTo("0000000000000400");
+    assertThat(reparsedRdp.getString(9)).isEqualTo("0000000003");
+    assertThat(reparsedRdp.getString(10)).isEqualTo("0000000000000100");
+    assertThat(reparsedRdp.getString(11)).isEqualTo("0000000004");
   }
 }
