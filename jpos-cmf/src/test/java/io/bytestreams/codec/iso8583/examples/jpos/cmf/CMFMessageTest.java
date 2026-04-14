@@ -126,6 +126,7 @@ class CMFMessageTest {
     msg.set(69, "BATCH FILE TRANSFER CONTROL DATA 12345  ");
     msg.set(70, "123456789012345678");
     msg.set(71, new byte[] {0x01, 0x02, 0x03});
+    msg.set(72, new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -296,6 +297,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.FILE_TRANSFER_DESCRIPTION_DATA.get(decoded))
         .isEqualTo("123456789012345678");
     assertThat(CMFMessage.RESERVED_71.get(decoded)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
+    assertThat(CMFMessage.DATA_RECORD.get(decoded)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -317,7 +319,8 @@ class CMFMessageTest {
                         "{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,"
                             + " 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
-                            + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71}"))
+                            + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
+                            + " 72}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -392,7 +395,8 @@ class CMFMessageTest {
         .containsEntry("batchFileTransferMessageControl", "BATCHCTL0")
         .containsEntry("batchFileTransferControlData", "BATCH FILE TRANSFER CONTROL DATA 12345  ")
         .containsEntry("fileTransferDescriptionData", "123456789012345678")
-        .containsEntry("reserved71", new byte[] {0x01, 0x02, 0x03});
+        .containsEntry("reserved71", new byte[] {0x01, 0x02, 0x03})
+        .containsEntry("dataRecord", new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -500,5 +504,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(69)).isEqualTo("BATCH FILE TRANSFER CONTROL DATA 12345  ");
     assertThat(reparsed.getString(70)).isEqualTo("123456789012345678");
     assertThat(reparsed.getBytes(71)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
+    assertThat(reparsed.getBytes(72)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
   }
 }
