@@ -6,30 +6,30 @@ import io.bytestreams.codec.core.DataObject;
 import io.bytestreams.codec.core.FieldSpec;
 
 public class ReconciliationDataPrimary extends DataObject {
-  private static final FieldSpec<ReconciliationDataPrimary, String> CREDITS_AMOUNT =
-      field("creditsAmount", CMFCodecs.hex(16));
-  private static final FieldSpec<ReconciliationDataPrimary, String> CREDITS_NUMBER =
-      field("creditsNumber", CMFCodecs.hex(10));
-  private static final FieldSpec<ReconciliationDataPrimary, String> CREDITS_CHARGEBACK_AMOUNT =
-      field("creditsChargebackAmount", CMFCodecs.hex(16));
-  private static final FieldSpec<ReconciliationDataPrimary, String> CREDITS_CHARGEBACK_NUMBER =
-      field("creditsChargebackNumber", CMFCodecs.hex(10));
-  private static final FieldSpec<ReconciliationDataPrimary, String> CREDITS_REVERSAL_AMOUNT =
-      field("creditsReversalAmount", CMFCodecs.hex(16));
-  private static final FieldSpec<ReconciliationDataPrimary, String> CREDITS_REVERSAL_NUMBER =
-      field("creditsReversalNumber", CMFCodecs.hex(10));
-  private static final FieldSpec<ReconciliationDataPrimary, String> DEBITS_AMOUNT =
-      field("debitsAmount", CMFCodecs.hex(16));
-  private static final FieldSpec<ReconciliationDataPrimary, String> DEBITS_NUMBER =
-      field("debitsNumber", CMFCodecs.hex(10));
-  private static final FieldSpec<ReconciliationDataPrimary, String> DEBITS_CHARGEBACK_AMOUNT =
-      field("debitsChargebackAmount", CMFCodecs.hex(16));
-  private static final FieldSpec<ReconciliationDataPrimary, String> DEBITS_CHARGEBACK_NUMBER =
-      field("debitsChargebackNumber", CMFCodecs.hex(10));
-  private static final FieldSpec<ReconciliationDataPrimary, String> DEBITS_REVERSAL_AMOUNT =
-      field("debitsReversalAmount", CMFCodecs.hex(16));
-  private static final FieldSpec<ReconciliationDataPrimary, String> DEBITS_REVERSAL_NUMBER =
-      field("debitsReversalNumber", CMFCodecs.hex(10));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> CREDITS_AMOUNT =
+      field("creditsAmount", Codecs.bcdLong(16));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> CREDITS_NUMBER =
+      field("creditsNumber", Codecs.bcdLong(10));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> CREDITS_CHARGEBACK_AMOUNT =
+      field("creditsChargebackAmount", Codecs.bcdLong(16));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> CREDITS_CHARGEBACK_NUMBER =
+      field("creditsChargebackNumber", Codecs.bcdLong(10));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> CREDITS_REVERSAL_AMOUNT =
+      field("creditsReversalAmount", Codecs.bcdLong(16));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> CREDITS_REVERSAL_NUMBER =
+      field("creditsReversalNumber", Codecs.bcdLong(10));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> DEBITS_AMOUNT =
+      field("debitsAmount", Codecs.bcdLong(16));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> DEBITS_NUMBER =
+      field("debitsNumber", Codecs.bcdLong(10));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> DEBITS_CHARGEBACK_AMOUNT =
+      field("debitsChargebackAmount", Codecs.bcdLong(16));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> DEBITS_CHARGEBACK_NUMBER =
+      field("debitsChargebackNumber", Codecs.bcdLong(10));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> DEBITS_REVERSAL_AMOUNT =
+      field("debitsReversalAmount", Codecs.bcdLong(16));
+  private static final FieldSpec<ReconciliationDataPrimary, Long> DEBITS_REVERSAL_NUMBER =
+      field("debitsReversalNumber", Codecs.bcdLong(10));
 
   public static final Codec<ReconciliationDataPrimary> CODEC =
       Codecs.sequential(ReconciliationDataPrimary::new)
@@ -47,51 +47,51 @@ public class ReconciliationDataPrimary extends DataObject {
           .field(DEBITS_REVERSAL_NUMBER)
           .build();
 
-  public String getCreditsAmount() {
+  public long getCreditsAmount() {
     return CREDITS_AMOUNT.get(this);
   }
 
-  public String getCreditsNumber() {
+  public long getCreditsNumber() {
     return CREDITS_NUMBER.get(this);
   }
 
-  public String getCreditsChargebackAmount() {
+  public long getCreditsChargebackAmount() {
     return CREDITS_CHARGEBACK_AMOUNT.get(this);
   }
 
-  public String getCreditsChargebackNumber() {
+  public long getCreditsChargebackNumber() {
     return CREDITS_CHARGEBACK_NUMBER.get(this);
   }
 
-  public String getCreditsReversalAmount() {
+  public long getCreditsReversalAmount() {
     return CREDITS_REVERSAL_AMOUNT.get(this);
   }
 
-  public String getCreditsReversalNumber() {
+  public long getCreditsReversalNumber() {
     return CREDITS_REVERSAL_NUMBER.get(this);
   }
 
-  public String getDebitsAmount() {
+  public long getDebitsAmount() {
     return DEBITS_AMOUNT.get(this);
   }
 
-  public String getDebitsNumber() {
+  public long getDebitsNumber() {
     return DEBITS_NUMBER.get(this);
   }
 
-  public String getDebitsChargebackAmount() {
+  public long getDebitsChargebackAmount() {
     return DEBITS_CHARGEBACK_AMOUNT.get(this);
   }
 
-  public String getDebitsChargebackNumber() {
+  public long getDebitsChargebackNumber() {
     return DEBITS_CHARGEBACK_NUMBER.get(this);
   }
 
-  public String getDebitsReversalAmount() {
+  public long getDebitsReversalAmount() {
     return DEBITS_REVERSAL_AMOUNT.get(this);
   }
 
-  public String getDebitsReversalNumber() {
+  public long getDebitsReversalNumber() {
     return DEBITS_REVERSAL_NUMBER.get(this);
   }
 }

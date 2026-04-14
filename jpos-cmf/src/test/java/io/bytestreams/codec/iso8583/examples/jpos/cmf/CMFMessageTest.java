@@ -315,18 +315,18 @@ class CMFMessageTest {
     assertThat(CMFMessage.DATA_RECORD.get(decoded)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
     assertThat(CMFMessage.DATE_ACTION.get(decoded)).isEqualTo(LocalDate.of(2026, 1, 1));
     ReconciliationDataPrimary rdp = CMFMessage.RECONCILIATION_DATA_PRIMARY.get(decoded);
-    assertThat(rdp.getCreditsAmount()).isEqualTo("0000000000001000");
-    assertThat(rdp.getCreditsNumber()).isEqualTo("0000000005");
-    assertThat(rdp.getCreditsChargebackAmount()).isEqualTo("0000000000000200");
-    assertThat(rdp.getCreditsChargebackNumber()).isEqualTo("0000000001");
-    assertThat(rdp.getCreditsReversalAmount()).isEqualTo("0000000000000050");
-    assertThat(rdp.getCreditsReversalNumber()).isEqualTo("0000000002");
-    assertThat(rdp.getDebitsAmount()).isEqualTo("0000000000002000");
-    assertThat(rdp.getDebitsNumber()).isEqualTo("0000000010");
-    assertThat(rdp.getDebitsChargebackAmount()).isEqualTo("0000000000000400");
-    assertThat(rdp.getDebitsChargebackNumber()).isEqualTo("0000000003");
-    assertThat(rdp.getDebitsReversalAmount()).isEqualTo("0000000000000100");
-    assertThat(rdp.getDebitsReversalNumber()).isEqualTo("0000000004");
+    assertThat(rdp.getCreditsAmount()).isEqualTo(1000L);
+    assertThat(rdp.getCreditsNumber()).isEqualTo(5L);
+    assertThat(rdp.getCreditsChargebackAmount()).isEqualTo(200L);
+    assertThat(rdp.getCreditsChargebackNumber()).isEqualTo(1L);
+    assertThat(rdp.getCreditsReversalAmount()).isEqualTo(50L);
+    assertThat(rdp.getCreditsReversalNumber()).isEqualTo(2L);
+    assertThat(rdp.getDebitsAmount()).isEqualTo(2000L);
+    assertThat(rdp.getDebitsNumber()).isEqualTo(10L);
+    assertThat(rdp.getDebitsChargebackAmount()).isEqualTo(400L);
+    assertThat(rdp.getDebitsChargebackNumber()).isEqualTo(3L);
+    assertThat(rdp.getDebitsReversalAmount()).isEqualTo(100L);
+    assertThat(rdp.getDebitsReversalNumber()).isEqualTo(4L);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
