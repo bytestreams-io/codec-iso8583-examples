@@ -181,6 +181,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(70, field("fileTransferDescriptionData", CMFCodecs.hex(18)));
   public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_71 =
       BitmappedFieldSpec.of(71, field("reserved71", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> DATA_RECORD =
+      BitmappedFieldSpec.of(72, field("dataRecord", Codecs.binary(Codecs.bcdInt(3))));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -255,6 +257,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(BATCH_FILE_TRANSFER_CONTROL_DATA)
           .dataField(FILE_TRANSFER_DESCRIPTION_DATA)
           .dataField(RESERVED_71)
+          .dataField(DATA_RECORD)
           .build();
 
   public CMFMessage() {
