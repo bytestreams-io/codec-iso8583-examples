@@ -145,6 +145,7 @@ class CMFMessageTest {
     msg.set(
         75,
         "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+    msg.set(76, new byte[] {0x76, 0x76});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -333,6 +334,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.RECONCILIATION_DATA_SECONDARY.get(decoded))
         .isEqualTo(
             "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+    assertThat(CMFMessage.RESERVED_76.get(decoded)).isEqualTo(new byte[] {0x76, 0x76});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -355,7 +357,7 @@ class CMFMessageTest {
                             + " 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
-                            + " 72, 73, 74, 75}"))
+                            + " 72, 73, 74, 75, 76}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -436,7 +438,8 @@ class CMFMessageTest {
         .containsKey("reconciliationDataPrimary")
         .containsEntry(
             "reconciliationDataSecondary",
-            "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+            "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")
+        .containsEntry("reserved76", new byte[] {0x76, 0x76});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -562,5 +565,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(75))
         .isEqualTo(
             "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+    assertThat(reparsed.getBytes(76)).isEqualTo(new byte[] {0x76, 0x76});
   }
 }
