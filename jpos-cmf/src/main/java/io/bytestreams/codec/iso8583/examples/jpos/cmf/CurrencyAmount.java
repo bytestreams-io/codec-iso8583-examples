@@ -1,7 +1,6 @@
 package io.bytestreams.codec.iso8583.examples.jpos.cmf;
 
 import io.bytestreams.codec.core.Codec;
-import io.bytestreams.codec.core.Codecs;
 import io.bytestreams.codec.core.EncodeResult;
 import io.bytestreams.codec.core.Inspectable;
 import java.io.IOException;
@@ -58,7 +57,9 @@ public class CurrencyAmount {
 
     public CurrencyAmountCodec(int length) {
       String format = "%s%1d%0" + (length - 4) + "d";
-      delegate = Codecs.hex(length).xmap(CurrencyAmount::new, amount -> amount.encode(format));
+      delegate =
+          new RightPaddedHexCodec(length)
+              .xmap(CurrencyAmount::new, amount -> amount.encode(format));
     }
 
     @Override

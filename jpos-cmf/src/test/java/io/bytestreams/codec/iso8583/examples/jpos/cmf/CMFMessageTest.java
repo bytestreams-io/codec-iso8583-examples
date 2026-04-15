@@ -165,6 +165,7 @@ class CMFMessageTest {
     msg.set(94, "98765432109");
     msg.set(95, "CARD ISSUER REF DATA");
     msg.set(96, new byte[] {(byte) 0x96, (byte) 0x96});
+    msg.set(97, "840200000000000001000");
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -389,6 +390,10 @@ class CMFMessageTest {
         .isEqualTo("CARD ISSUER REF DATA");
     assertThat(CMFMessage.KEY_MANAGEMENT_DATA.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x96, (byte) 0x96});
+    CurrencyAmount amountNetRecon = CMFMessage.AMOUNT_NET_RECONCILIATION.get(decoded);
+    assertThat(amountNetRecon.getCurrencyCode()).isEqualTo("840");
+    assertThat(amountNetRecon.getDecimalPlaces()).isEqualTo(2);
+    assertThat(amountNetRecon.getAmount()).isEqualTo(1000L);
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -412,7 +417,7 @@ class CMFMessageTest {
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
-                            + " 88, 89, 90, 92, 93, 94, 95, 96}"))
+                            + " 88, 89, 90, 92, 93, 94, 95, 96, 97}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -513,7 +518,10 @@ class CMFMessageTest {
         .containsEntry("transactionDestinationInstitutionIdCode", "12345678901")
         .containsEntry("transactionOriginatorInstitutionIdCode", "98765432109")
         .containsEntry("cardIssuerReferenceData", "CARD ISSUER REF DATA")
-        .containsEntry("keyManagementData", new byte[] {(byte) 0x96, (byte) 0x96});
+        .containsEntry("keyManagementData", new byte[] {(byte) 0x96, (byte) 0x96})
+        .containsEntry(
+            "amountNetReconciliation",
+            Map.of("currencyCode", "840", "decimalPlaces", 2, "amount", 1000L));
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -659,5 +667,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(94)).isEqualTo("98765432109");
     assertThat(reparsed.getString(95)).isEqualTo("CARD ISSUER REF DATA");
     assertThat(reparsed.getBytes(96)).isEqualTo(new byte[] {(byte) 0x96, (byte) 0x96});
+    assertThat(reparsed.getString(97)).isEqualTo("840200000000000001000");
   }
 }
