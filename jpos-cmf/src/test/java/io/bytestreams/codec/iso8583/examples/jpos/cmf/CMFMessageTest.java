@@ -148,6 +148,17 @@ class CMFMessageTest {
     msg.set(76, new byte[] {0x76, 0x76});
     msg.set(77, new byte[] {0x77, 0x77});
     msg.set(78, new byte[] {0x78, 0x78});
+    msg.set(79, new byte[] {0x79, 0x79});
+    msg.set(80, new byte[] {(byte) 0x80, (byte) 0x80});
+    msg.set(81, new byte[] {(byte) 0x81, (byte) 0x81});
+    msg.set(82, new byte[] {(byte) 0x82, (byte) 0x82});
+    msg.set(83, new byte[] {(byte) 0x83, (byte) 0x83});
+    msg.set(84, new byte[] {(byte) 0x84, (byte) 0x84});
+    msg.set(85, new byte[] {(byte) 0x85, (byte) 0x85});
+    msg.set(86, new byte[] {(byte) 0x86, (byte) 0x86});
+    msg.set(87, new byte[] {(byte) 0x87, (byte) 0x87});
+    msg.set(88, new byte[] {(byte) 0x88, (byte) 0x88});
+    msg.set(89, new byte[] {(byte) 0x89, (byte) 0x89});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -339,6 +350,27 @@ class CMFMessageTest {
     assertThat(CMFMessage.RESERVED_76.get(decoded)).isEqualTo(new byte[] {0x76, 0x76});
     assertThat(CMFMessage.RESERVED_77.get(decoded)).isEqualTo(new byte[] {0x77, 0x77});
     assertThat(CMFMessage.RESERVED_78.get(decoded)).isEqualTo(new byte[] {0x78, 0x78});
+    assertThat(CMFMessage.RESERVED_79.get(decoded)).isEqualTo(new byte[] {0x79, 0x79});
+    assertThat(CMFMessage.RESERVED_80.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x80, (byte) 0x80});
+    assertThat(CMFMessage.RESERVED_81.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x81, (byte) 0x81});
+    assertThat(CMFMessage.RESERVED_82.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x82, (byte) 0x82});
+    assertThat(CMFMessage.RESERVED_83.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x83, (byte) 0x83});
+    assertThat(CMFMessage.RESERVED_84.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x84, (byte) 0x84});
+    assertThat(CMFMessage.RESERVED_85.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x85, (byte) 0x85});
+    assertThat(CMFMessage.RESERVED_86.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x86, (byte) 0x86});
+    assertThat(CMFMessage.RESERVED_87.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x87, (byte) 0x87});
+    assertThat(CMFMessage.RESERVED_88.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x88, (byte) 0x88});
+    assertThat(CMFMessage.RESERVED_89.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x89, (byte) 0x89});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -361,7 +393,8 @@ class CMFMessageTest {
                             + " 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,"
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
-                            + " 72, 73, 74, 75, 76, 77, 78}"))
+                            + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
+                            + " 88, 89}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -445,7 +478,18 @@ class CMFMessageTest {
             "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")
         .containsEntry("reserved76", new byte[] {0x76, 0x76})
         .containsEntry("reserved77", new byte[] {0x77, 0x77})
-        .containsEntry("reserved78", new byte[] {0x78, 0x78});
+        .containsEntry("reserved78", new byte[] {0x78, 0x78})
+        .containsEntry("reserved79", new byte[] {0x79, 0x79})
+        .containsEntry("reserved80", new byte[] {(byte) 0x80, (byte) 0x80})
+        .containsEntry("reserved81", new byte[] {(byte) 0x81, (byte) 0x81})
+        .containsEntry("reserved82", new byte[] {(byte) 0x82, (byte) 0x82})
+        .containsEntry("reserved83", new byte[] {(byte) 0x83, (byte) 0x83})
+        .containsEntry("reserved84", new byte[] {(byte) 0x84, (byte) 0x84})
+        .containsEntry("reserved85", new byte[] {(byte) 0x85, (byte) 0x85})
+        .containsEntry("reserved86", new byte[] {(byte) 0x86, (byte) 0x86})
+        .containsEntry("reserved87", new byte[] {(byte) 0x87, (byte) 0x87})
+        .containsEntry("reserved88", new byte[] {(byte) 0x88, (byte) 0x88})
+        .containsEntry("reserved89", new byte[] {(byte) 0x89, (byte) 0x89});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -574,5 +618,16 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(76)).isEqualTo(new byte[] {0x76, 0x76});
     assertThat(reparsed.getBytes(77)).isEqualTo(new byte[] {0x77, 0x77});
     assertThat(reparsed.getBytes(78)).isEqualTo(new byte[] {0x78, 0x78});
+    assertThat(reparsed.getBytes(79)).isEqualTo(new byte[] {0x79, 0x79});
+    assertThat(reparsed.getBytes(80)).isEqualTo(new byte[] {(byte) 0x80, (byte) 0x80});
+    assertThat(reparsed.getBytes(81)).isEqualTo(new byte[] {(byte) 0x81, (byte) 0x81});
+    assertThat(reparsed.getBytes(82)).isEqualTo(new byte[] {(byte) 0x82, (byte) 0x82});
+    assertThat(reparsed.getBytes(83)).isEqualTo(new byte[] {(byte) 0x83, (byte) 0x83});
+    assertThat(reparsed.getBytes(84)).isEqualTo(new byte[] {(byte) 0x84, (byte) 0x84});
+    assertThat(reparsed.getBytes(85)).isEqualTo(new byte[] {(byte) 0x85, (byte) 0x85});
+    assertThat(reparsed.getBytes(86)).isEqualTo(new byte[] {(byte) 0x86, (byte) 0x86});
+    assertThat(reparsed.getBytes(87)).isEqualTo(new byte[] {(byte) 0x87, (byte) 0x87});
+    assertThat(reparsed.getBytes(88)).isEqualTo(new byte[] {(byte) 0x88, (byte) 0x88});
+    assertThat(reparsed.getBytes(89)).isEqualTo(new byte[] {(byte) 0x89, (byte) 0x89});
   }
 }
