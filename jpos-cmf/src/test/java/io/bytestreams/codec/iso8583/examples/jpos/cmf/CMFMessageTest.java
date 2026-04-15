@@ -169,6 +169,7 @@ class CMFMessageTest {
     msg.set(98, "ACME PAYEE               ");
     msg.set(99, "SETTLE INST");
     msg.set(100, "12345678901");
+    msg.set(101, "TRANSACTIONS.DAT");
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -400,6 +401,7 @@ class CMFMessageTest {
     assertThat(CMFMessage.PAYEE.get(decoded)).isEqualTo("ACME PAYEE               ");
     assertThat(CMFMessage.SETTLEMENT_INSTITUTION_ID_CODE.get(decoded)).isEqualTo("SETTLE INST");
     assertThat(CMFMessage.RECEIVING_INSTITUTION_ID_CODE.get(decoded)).isEqualTo("12345678901");
+    assertThat(CMFMessage.FILE_NAME.get(decoded)).isEqualTo("TRANSACTIONS.DAT");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -423,7 +425,7 @@ class CMFMessageTest {
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
-                            + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100}"))
+                            + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -530,7 +532,8 @@ class CMFMessageTest {
             Map.of("currencyCode", "840", "decimalPlaces", 2, "amount", 1000L))
         .containsEntry("payee", "ACME PAYEE               ")
         .containsEntry("settlementInstitutionIdCode", "SETTLE INST")
-        .containsEntry("receivingInstitutionIdCode", "12345678901");
+        .containsEntry("receivingInstitutionIdCode", "12345678901")
+        .containsEntry("fileName", "TRANSACTIONS.DAT");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -680,5 +683,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(98)).isEqualTo("ACME PAYEE               ");
     assertThat(reparsed.getString(99)).isEqualTo("SETTLE INST");
     assertThat(reparsed.getString(100)).isEqualTo("12345678901");
+    assertThat(reparsed.getString(101)).isEqualTo("TRANSACTIONS.DAT");
   }
 }
