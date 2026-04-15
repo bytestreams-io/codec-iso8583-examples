@@ -227,6 +227,10 @@ public class CMFMessage extends DataObject implements Bitmapped {
           BitmappedFieldSpec.of(
               93,
               field("transactionDestinationInstitutionIdCode", CMFCodecs.hex(Codecs.bcdInt(2))));
+  public static final BitmappedFieldSpec<CMFMessage, String>
+      TRANSACTION_ORIGINATOR_INSTITUTION_ID_CODE =
+          BitmappedFieldSpec.of(
+              94, field("transactionOriginatorInstitutionIdCode", CMFCodecs.hex(Codecs.bcdInt(2))));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -324,6 +328,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .reject(91, "DE-091 is not defined in cmf.xml")
           .dataField(RESERVED_92)
           .dataField(TRANSACTION_DESTINATION_INSTITUTION_ID_CODE)
+          .dataField(TRANSACTION_ORIGINATOR_INSTITUTION_ID_CODE)
           .build();
 
   public CMFMessage() {
