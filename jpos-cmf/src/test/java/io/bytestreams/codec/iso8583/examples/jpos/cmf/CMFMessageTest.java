@@ -159,6 +159,7 @@ class CMFMessageTest {
     msg.set(87, new byte[] {(byte) 0x87, (byte) 0x87});
     msg.set(88, new byte[] {(byte) 0x88, (byte) 0x88});
     msg.set(89, new byte[] {(byte) 0x89, (byte) 0x89});
+    msg.set(90, new byte[] {(byte) 0x90, (byte) 0x90});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -371,6 +372,8 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {(byte) 0x88, (byte) 0x88});
     assertThat(CMFMessage.RESERVED_89.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x89, (byte) 0x89});
+    assertThat(CMFMessage.RESERVED_90.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x90, (byte) 0x90});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -394,7 +397,7 @@ class CMFMessageTest {
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
-                            + " 88, 89}"))
+                            + " 88, 89, 90}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -489,7 +492,8 @@ class CMFMessageTest {
         .containsEntry("reserved86", new byte[] {(byte) 0x86, (byte) 0x86})
         .containsEntry("reserved87", new byte[] {(byte) 0x87, (byte) 0x87})
         .containsEntry("reserved88", new byte[] {(byte) 0x88, (byte) 0x88})
-        .containsEntry("reserved89", new byte[] {(byte) 0x89, (byte) 0x89});
+        .containsEntry("reserved89", new byte[] {(byte) 0x89, (byte) 0x89})
+        .containsEntry("reserved90", new byte[] {(byte) 0x90, (byte) 0x90});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -629,5 +633,6 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(87)).isEqualTo(new byte[] {(byte) 0x87, (byte) 0x87});
     assertThat(reparsed.getBytes(88)).isEqualTo(new byte[] {(byte) 0x88, (byte) 0x88});
     assertThat(reparsed.getBytes(89)).isEqualTo(new byte[] {(byte) 0x89, (byte) 0x89});
+    assertThat(reparsed.getBytes(90)).isEqualTo(new byte[] {(byte) 0x90, (byte) 0x90});
   }
 }
