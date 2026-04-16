@@ -178,6 +178,7 @@ class CMFMessageTest {
     msg.set(107, new byte[] {(byte) 0x10, (byte) 0x07});
     msg.set(108, new byte[] {(byte) 0x10, (byte) 0x08});
     msg.set(109, "RECONCILIATION FEE CREDIT");
+    msg.set(110, "RECONCILIATION FEE DEBIT");
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -426,6 +427,8 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {(byte) 0x10, (byte) 0x08});
     assertThat(CMFMessage.RECONCILIATION_FEE_AMOUNTS_CREDIT.get(decoded))
         .isEqualTo("RECONCILIATION FEE CREDIT");
+    assertThat(CMFMessage.RECONCILIATION_FEE_AMOUNTS_DEBIT.get(decoded))
+        .isEqualTo("RECONCILIATION FEE DEBIT");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -450,7 +453,7 @@ class CMFMessageTest {
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
                             + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
-                            + " 104, 105, 106, 107, 108, 109}"))
+                            + " 104, 105, 106, 107, 108, 109, 110}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -566,7 +569,8 @@ class CMFMessageTest {
         .containsEntry("reserved106", new byte[] {(byte) 0x10, (byte) 0x06})
         .containsEntry("reserved107", new byte[] {(byte) 0x10, (byte) 0x07})
         .containsEntry("reserved108", new byte[] {(byte) 0x10, (byte) 0x08})
-        .containsEntry("reconciliationFeeAmountsCredit", "RECONCILIATION FEE CREDIT");
+        .containsEntry("reconciliationFeeAmountsCredit", "RECONCILIATION FEE CREDIT")
+        .containsEntry("reconciliationFeeAmountsDebit", "RECONCILIATION FEE DEBIT");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -725,5 +729,6 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(107)).isEqualTo(new byte[] {(byte) 0x10, (byte) 0x07});
     assertThat(reparsed.getBytes(108)).isEqualTo(new byte[] {(byte) 0x10, (byte) 0x08});
     assertThat(reparsed.getString(109)).isEqualTo("RECONCILIATION FEE CREDIT");
+    assertThat(reparsed.getString(110)).isEqualTo("RECONCILIATION FEE DEBIT");
   }
 }
