@@ -249,6 +249,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(101, field("fileName", Codecs.ascii(Codecs.bcdInt(2))));
   public static final BitmappedFieldSpec<CMFMessage, String> ACCOUNT_IDENTIFICATION_1 =
       BitmappedFieldSpec.of(102, field("accountIdentification1", Codecs.ascii(Codecs.bcdInt(2))));
+  public static final BitmappedFieldSpec<CMFMessage, String> ACCOUNT_IDENTIFICATION_2 =
+      BitmappedFieldSpec.of(103, field("accountIdentification2", Codecs.ascii(Codecs.bcdInt(2))));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -355,6 +357,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(RECEIVING_INSTITUTION_ID_CODE)
           .dataField(FILE_NAME)
           .dataField(ACCOUNT_IDENTIFICATION_1)
+          .dataField(ACCOUNT_IDENTIFICATION_2)
           .build();
 
   public CMFMessage() {
