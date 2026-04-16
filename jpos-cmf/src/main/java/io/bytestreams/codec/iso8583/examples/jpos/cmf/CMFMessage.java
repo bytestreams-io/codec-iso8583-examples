@@ -274,6 +274,24 @@ public class CMFMessage extends DataObject implements Bitmapped {
   public static final BitmappedFieldSpec<CMFMessage, TppPrivateData> TPP_PRIVATE_DATA =
       BitmappedFieldSpec.of(
           113, field("tppPrivateData", Codecs.prefixed(Codecs.bcdInt(4), TppPrivateData.CODEC)));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_114 =
+      BitmappedFieldSpec.of(114, field("reserved114", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_115 =
+      BitmappedFieldSpec.of(115, field("reserved115", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_116 =
+      BitmappedFieldSpec.of(116, field("reserved116", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_117 =
+      BitmappedFieldSpec.of(117, field("reserved117", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_118 =
+      BitmappedFieldSpec.of(118, field("reserved118", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_119 =
+      BitmappedFieldSpec.of(119, field("reserved119", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_120 =
+      BitmappedFieldSpec.of(120, field("reserved120", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_121 =
+      BitmappedFieldSpec.of(121, field("reserved121", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_122 =
+      BitmappedFieldSpec.of(122, field("reserved122", Codecs.binary(Codecs.bcdInt(4))));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -391,6 +409,15 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(RESERVED_111)
           .dataField(RESERVED_112)
           .dataField(TPP_PRIVATE_DATA)
+          .dataField(RESERVED_114)
+          .dataField(RESERVED_115)
+          .dataField(RESERVED_116)
+          .dataField(RESERVED_117)
+          .dataField(RESERVED_118)
+          .dataField(RESERVED_119)
+          .dataField(RESERVED_120)
+          .dataField(RESERVED_121)
+          .dataField(RESERVED_122)
           .build();
 
   public CMFMessage() {
