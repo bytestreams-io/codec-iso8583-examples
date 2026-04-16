@@ -181,6 +181,13 @@ class CMFMessageTest {
     msg.set(110, "RECONCILIATION FEE DEBIT");
     msg.set(111, new byte[] {(byte) 0x11, (byte) 0x11});
     msg.set(112, new byte[] {(byte) 0x11, (byte) 0x12});
+    ISOMsg tppMsg = new ISOMsg(113);
+    tppMsg.set(2, "1.0");
+    tppMsg.set(3, "John");
+    tppMsg.set(5, "Doe");
+    tppMsg.set(7, "john.doe@example.com");
+    tppMsg.set(69, "4000123456789012345678901234567890123456");
+    msg.set(tppMsg);
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -435,6 +442,12 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x11});
     assertThat(CMFMessage.RESERVED_112.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x12});
+    TppPrivateData tpp = CMFMessage.TPP_PRIVATE_DATA.get(decoded);
+    assertThat(tpp.getVersion()).isEqualTo("1.0");
+    assertThat(tpp.getFirstName()).isEqualTo("John");
+    assertThat(tpp.getLastName()).isEqualTo("Doe");
+    assertThat(tpp.getEmail()).isEqualTo("john.doe@example.com");
+    assertThat(tpp.getCardToken()).isEqualTo("4000123456789012345678901234567890123456");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -459,7 +472,7 @@ class CMFMessageTest {
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
                             + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
-                            + " 104, 105, 106, 107, 108, 109, 110, 111, 112}"))
+                            + " 104, 105, 106, 107, 108, 109, 110, 111, 112, 113}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -578,7 +591,8 @@ class CMFMessageTest {
         .containsEntry("reconciliationFeeAmountsCredit", "RECONCILIATION FEE CREDIT")
         .containsEntry("reconciliationFeeAmountsDebit", "RECONCILIATION FEE DEBIT")
         .containsEntry("reserved111", new byte[] {(byte) 0x11, (byte) 0x11})
-        .containsEntry("reserved112", new byte[] {(byte) 0x11, (byte) 0x12});
+        .containsEntry("reserved112", new byte[] {(byte) 0x11, (byte) 0x12})
+        .containsKey("tppPrivateData");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -740,5 +754,11 @@ class CMFMessageTest {
     assertThat(reparsed.getString(110)).isEqualTo("RECONCILIATION FEE DEBIT");
     assertThat(reparsed.getBytes(111)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x11});
     assertThat(reparsed.getBytes(112)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x12});
+    ISOMsg reparsedTpp = (ISOMsg) reparsed.getComponent(113);
+    assertThat(reparsedTpp.getString(2)).isEqualTo("1.0");
+    assertThat(reparsedTpp.getString(3)).isEqualTo("John");
+    assertThat(reparsedTpp.getString(5)).isEqualTo("Doe");
+    assertThat(reparsedTpp.getString(7)).isEqualTo("john.doe@example.com");
+    assertThat(reparsedTpp.getString(69)).isEqualTo("4000123456789012345678901234567890123456");
   }
 }
