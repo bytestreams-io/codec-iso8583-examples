@@ -181,6 +181,15 @@ class CMFMessageTest {
     msg.set(110, "RECONCILIATION FEE DEBIT");
     msg.set(111, new byte[] {(byte) 0x11, (byte) 0x11});
     msg.set(112, new byte[] {(byte) 0x11, (byte) 0x12});
+    msg.set(114, new byte[] {(byte) 0x11, (byte) 0x14});
+    msg.set(115, new byte[] {(byte) 0x11, (byte) 0x15});
+    msg.set(116, new byte[] {(byte) 0x11, (byte) 0x16});
+    msg.set(117, new byte[] {(byte) 0x11, (byte) 0x17});
+    msg.set(118, new byte[] {(byte) 0x11, (byte) 0x18});
+    msg.set(119, new byte[] {(byte) 0x11, (byte) 0x19});
+    msg.set(120, new byte[] {(byte) 0x12, (byte) 0x20});
+    msg.set(121, new byte[] {(byte) 0x12, (byte) 0x21});
+    msg.set(122, new byte[] {(byte) 0x12, (byte) 0x22});
     ISOMsg tppMsg = new ISOMsg(113);
     tppMsg.set(2, "1.0");
     tppMsg.set(3, "John");
@@ -442,6 +451,24 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x11});
     assertThat(CMFMessage.RESERVED_112.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x12});
+    assertThat(CMFMessage.RESERVED_114.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x14});
+    assertThat(CMFMessage.RESERVED_115.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x15});
+    assertThat(CMFMessage.RESERVED_116.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x16});
+    assertThat(CMFMessage.RESERVED_117.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x17});
+    assertThat(CMFMessage.RESERVED_118.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x18});
+    assertThat(CMFMessage.RESERVED_119.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x11, (byte) 0x19});
+    assertThat(CMFMessage.RESERVED_120.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x20});
+    assertThat(CMFMessage.RESERVED_121.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x21});
+    assertThat(CMFMessage.RESERVED_122.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x22});
     TppPrivateData tpp = CMFMessage.TPP_PRIVATE_DATA.get(decoded);
     assertThat(tpp.getVersion()).isEqualTo("1.0");
     assertThat(tpp.getFirstName()).isEqualTo("John");
@@ -472,7 +499,8 @@ class CMFMessageTest {
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
                             + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
-                            + " 104, 105, 106, 107, 108, 109, 110, 111, 112, 113}"))
+                            + " 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,"
+                            + " 116, 117, 118, 119, 120, 121, 122}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -592,7 +620,16 @@ class CMFMessageTest {
         .containsEntry("reconciliationFeeAmountsDebit", "RECONCILIATION FEE DEBIT")
         .containsEntry("reserved111", new byte[] {(byte) 0x11, (byte) 0x11})
         .containsEntry("reserved112", new byte[] {(byte) 0x11, (byte) 0x12})
-        .containsKey("tppPrivateData");
+        .containsKey("tppPrivateData")
+        .containsEntry("reserved114", new byte[] {(byte) 0x11, (byte) 0x14})
+        .containsEntry("reserved115", new byte[] {(byte) 0x11, (byte) 0x15})
+        .containsEntry("reserved116", new byte[] {(byte) 0x11, (byte) 0x16})
+        .containsEntry("reserved117", new byte[] {(byte) 0x11, (byte) 0x17})
+        .containsEntry("reserved118", new byte[] {(byte) 0x11, (byte) 0x18})
+        .containsEntry("reserved119", new byte[] {(byte) 0x11, (byte) 0x19})
+        .containsEntry("reserved120", new byte[] {(byte) 0x12, (byte) 0x20})
+        .containsEntry("reserved121", new byte[] {(byte) 0x12, (byte) 0x21})
+        .containsEntry("reserved122", new byte[] {(byte) 0x12, (byte) 0x22});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -760,5 +797,14 @@ class CMFMessageTest {
     assertThat(reparsedTpp.getString(5)).isEqualTo("Doe");
     assertThat(reparsedTpp.getString(7)).isEqualTo("john.doe@example.com");
     assertThat(reparsedTpp.getString(69)).isEqualTo("4000123456789012345678901234567890123456");
+    assertThat(reparsed.getBytes(114)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x14});
+    assertThat(reparsed.getBytes(115)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x15});
+    assertThat(reparsed.getBytes(116)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x16});
+    assertThat(reparsed.getBytes(117)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x17});
+    assertThat(reparsed.getBytes(118)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x18});
+    assertThat(reparsed.getBytes(119)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x19});
+    assertThat(reparsed.getBytes(120)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x20});
+    assertThat(reparsed.getBytes(121)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x21});
+    assertThat(reparsed.getBytes(122)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x22});
   }
 }
