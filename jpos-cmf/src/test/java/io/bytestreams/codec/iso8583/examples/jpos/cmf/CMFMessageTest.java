@@ -172,6 +172,7 @@ class CMFMessageTest {
     msg.set(101, "TRANSACTIONS.DAT");
     msg.set(102, "4000123456789012345678");
     msg.set(103, "5500987654321098765432");
+    msg.set(104, new byte[] {(byte) 0x10, (byte) 0x04});
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
     vdMsg.set(3, "1234 MAIN ST    ");
@@ -408,6 +409,8 @@ class CMFMessageTest {
         .isEqualTo("4000123456789012345678");
     assertThat(CMFMessage.ACCOUNT_IDENTIFICATION_2.get(decoded))
         .isEqualTo("5500987654321098765432");
+    assertThat(CMFMessage.TRANSACTION_SPECIFIC_DATA.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x10, (byte) 0x04});
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -431,7 +434,8 @@ class CMFMessageTest {
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
-                            + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103}"))
+                            + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
+                            + " 104}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -541,7 +545,8 @@ class CMFMessageTest {
         .containsEntry("receivingInstitutionIdCode", "12345678901")
         .containsEntry("fileName", "TRANSACTIONS.DAT")
         .containsEntry("accountIdentification1", "4000123456789012345678")
-        .containsEntry("accountIdentification2", "5500987654321098765432");
+        .containsEntry("accountIdentification2", "5500987654321098765432")
+        .containsEntry("transactionSpecificData", new byte[] {(byte) 0x10, (byte) 0x04});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -694,5 +699,6 @@ class CMFMessageTest {
     assertThat(reparsed.getString(101)).isEqualTo("TRANSACTIONS.DAT");
     assertThat(reparsed.getString(102)).isEqualTo("4000123456789012345678");
     assertThat(reparsed.getString(103)).isEqualTo("5500987654321098765432");
+    assertThat(reparsed.getBytes(104)).isEqualTo(new byte[] {(byte) 0x10, (byte) 0x04});
   }
 }
