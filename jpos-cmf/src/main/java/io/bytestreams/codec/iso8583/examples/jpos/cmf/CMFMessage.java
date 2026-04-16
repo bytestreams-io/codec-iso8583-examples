@@ -267,6 +267,10 @@ public class CMFMessage extends DataObject implements Bitmapped {
   public static final BitmappedFieldSpec<CMFMessage, String> RECONCILIATION_FEE_AMOUNTS_DEBIT =
       BitmappedFieldSpec.of(
           110, field("reconciliationFeeAmountsDebit", Codecs.ascii(Codecs.bcdInt(3))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_111 =
+      BitmappedFieldSpec.of(111, field("reserved111", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_112 =
+      BitmappedFieldSpec.of(112, field("reserved112", Codecs.binary(Codecs.bcdInt(4))));
 
   public static final Codec<CMFMessage> CODEC =
       BitmappedCodecBuilder.builder(CMFMessage::new)
@@ -381,6 +385,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(RESERVED_108)
           .dataField(RECONCILIATION_FEE_AMOUNTS_CREDIT)
           .dataField(RECONCILIATION_FEE_AMOUNTS_DEBIT)
+          .dataField(RESERVED_111)
+          .dataField(RESERVED_112)
           .build();
 
   public CMFMessage() {
