@@ -195,6 +195,7 @@ class CMFMessageTest {
     msg.set(125, new byte[] {(byte) 0x12, (byte) 0x25});
     msg.set(126, new byte[] {(byte) 0x12, (byte) 0x26});
     msg.set(127, new byte[] {(byte) 0x12, (byte) 0x27});
+    msg.set(128, new byte[] {(byte) 0x12, (byte) 0x28, (byte) 0x12, (byte) 0x28});
     ISOMsg tppMsg = new ISOMsg(113);
     tppMsg.set(2, "1.0");
     tppMsg.set(3, "John");
@@ -483,6 +484,8 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x26});
     assertThat(CMFMessage.RESERVED_127.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x27});
+    assertThat(CMFMessage.MESSAGE_AUTHENTICATION_CODE_2.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x28, (byte) 0x12, (byte) 0x28});
     TppPrivateData tpp = CMFMessage.TPP_PRIVATE_DATA.get(decoded);
     assertThat(tpp.getVersion()).isEqualTo("1.0");
     assertThat(tpp.getFirstName()).isEqualTo("John");
@@ -514,7 +517,8 @@ class CMFMessageTest {
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
                             + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
                             + " 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,"
-                            + " 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127}"))
+                            + " 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127,"
+                            + " 128}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -648,7 +652,10 @@ class CMFMessageTest {
         .containsEntry("reserved124", new byte[] {(byte) 0x12, (byte) 0x24})
         .containsEntry("reserved125", new byte[] {(byte) 0x12, (byte) 0x25})
         .containsEntry("reserved126", new byte[] {(byte) 0x12, (byte) 0x26})
-        .containsEntry("reserved127", new byte[] {(byte) 0x12, (byte) 0x27});
+        .containsEntry("reserved127", new byte[] {(byte) 0x12, (byte) 0x27})
+        .containsEntry(
+            "messageAuthenticationCode2",
+            new byte[] {(byte) 0x12, (byte) 0x28, (byte) 0x12, (byte) 0x28});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -830,5 +837,7 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(125)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x25});
     assertThat(reparsed.getBytes(126)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x26});
     assertThat(reparsed.getBytes(127)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x27});
+    assertThat(reparsed.getBytes(128))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x28, (byte) 0x12, (byte) 0x28});
   }
 }
