@@ -191,6 +191,10 @@ class CMFMessageTest {
     msg.set(121, new byte[] {(byte) 0x12, (byte) 0x21});
     msg.set(122, new byte[] {(byte) 0x12, (byte) 0x22});
     msg.set(123, "RESERVED123DATA");
+    msg.set(124, new byte[] {(byte) 0x12, (byte) 0x24});
+    msg.set(125, new byte[] {(byte) 0x12, (byte) 0x25});
+    msg.set(126, new byte[] {(byte) 0x12, (byte) 0x26});
+    msg.set(127, new byte[] {(byte) 0x12, (byte) 0x27});
     ISOMsg tppMsg = new ISOMsg(113);
     tppMsg.set(2, "1.0");
     tppMsg.set(3, "John");
@@ -471,6 +475,14 @@ class CMFMessageTest {
     assertThat(CMFMessage.RESERVED_122.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x22});
     assertThat(CMFMessage.RESERVED_123.get(decoded)).isEqualTo("RESERVED123DATA");
+    assertThat(CMFMessage.RESERVED_124.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x24});
+    assertThat(CMFMessage.RESERVED_125.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x25});
+    assertThat(CMFMessage.RESERVED_126.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x26});
+    assertThat(CMFMessage.RESERVED_127.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x27});
     TppPrivateData tpp = CMFMessage.TPP_PRIVATE_DATA.get(decoded);
     assertThat(tpp.getVersion()).isEqualTo("1.0");
     assertThat(tpp.getFirstName()).isEqualTo("John");
@@ -502,7 +514,7 @@ class CMFMessageTest {
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
                             + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
                             + " 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,"
-                            + " 116, 117, 118, 119, 120, 121, 122, 123}"))
+                            + " 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127}"))
         .containsEntry("pan", "400012******8901")
         .containsEntry("processingCode", processingCodeMap)
         .containsEntry("transactionAmount", amountMap)
@@ -632,7 +644,11 @@ class CMFMessageTest {
         .containsEntry("reserved120", new byte[] {(byte) 0x12, (byte) 0x20})
         .containsEntry("reserved121", new byte[] {(byte) 0x12, (byte) 0x21})
         .containsEntry("reserved122", new byte[] {(byte) 0x12, (byte) 0x22})
-        .containsEntry("reserved123", "RESERVED123DATA");
+        .containsEntry("reserved123", "RESERVED123DATA")
+        .containsEntry("reserved124", new byte[] {(byte) 0x12, (byte) 0x24})
+        .containsEntry("reserved125", new byte[] {(byte) 0x12, (byte) 0x25})
+        .containsEntry("reserved126", new byte[] {(byte) 0x12, (byte) 0x26})
+        .containsEntry("reserved127", new byte[] {(byte) 0x12, (byte) 0x27});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     CMFMessage.CODEC.encode(decoded, out);
@@ -810,5 +826,9 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(121)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x21});
     assertThat(reparsed.getBytes(122)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x22});
     assertThat(reparsed.getString(123)).isEqualTo("RESERVED123DATA");
+    assertThat(reparsed.getBytes(124)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x24});
+    assertThat(reparsed.getBytes(125)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x25});
+    assertThat(reparsed.getBytes(126)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x26});
+    assertThat(reparsed.getBytes(127)).isEqualTo(new byte[] {(byte) 0x12, (byte) 0x27});
   }
 }
