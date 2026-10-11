@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.jpos.iso.ISOMsg;
@@ -65,7 +66,7 @@ class CMFMessageTest {
             .verificationCapability(org.jpos.iso.PosDataCode.VerificationMethod.ONLINE_PIN)
             .build();
     // jPOS 3.0.2 PosCapability spans all of DE-027 (27 bytes); CMF subfield 0 is its first 8 bytes
-    byte[] jposCapabilityBits = java.util.Arrays.copyOf(jposPosCapability.getBytes(), 8);
+    byte[] jposCapabilityBits = Arrays.copyOf(jposPosCapability.getBytes(), 8);
     ISOMsg posCapMsg = new ISOMsg(27);
     posCapMsg.set(0, jposCapabilityBits);
     posCapMsg.set(1, "6");
