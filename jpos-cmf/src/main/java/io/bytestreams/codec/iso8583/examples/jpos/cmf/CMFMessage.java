@@ -181,7 +181,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
   public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_71 =
       BitmappedFieldSpec.of(71, field("reserved71", Codecs.binary(Codecs.bcdInt(4))));
   public static final BitmappedFieldSpec<CMFMessage, byte[]> DATA_RECORD =
-      BitmappedFieldSpec.of(72, field("dataRecord", Codecs.binary(Codecs.bcdInt(3))));
+      BitmappedFieldSpec.of(72, field("dataRecord", Codecs.binary(Codecs.bcdInt(4))));
   public static final BitmappedFieldSpec<CMFMessage, LocalDate> DATE_ACTION =
       BitmappedFieldSpec.of(73, field("dateAction", YYYYMMDD));
   public static final BitmappedFieldSpec<CMFMessage, ReconciliationDataPrimary>
@@ -220,6 +220,8 @@ public class CMFMessage extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(89, field("reserved89", Codecs.binary(Codecs.bcdInt(4))));
   public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_90 =
       BitmappedFieldSpec.of(90, field("reserved90", Codecs.binary(Codecs.bcdInt(4))));
+  public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_91 =
+      BitmappedFieldSpec.of(91, field("reserved91", Codecs.binary(Codecs.bcdInt(4))));
   public static final BitmappedFieldSpec<CMFMessage, byte[]> RESERVED_92 =
       BitmappedFieldSpec.of(92, field("reserved92", Codecs.binary(Codecs.bcdInt(4))));
   public static final BitmappedFieldSpec<CMFMessage, String>
@@ -397,8 +399,7 @@ public class CMFMessage extends DataObject implements Bitmapped {
           .dataField(RESERVED_88)
           .dataField(RESERVED_89)
           .dataField(RESERVED_90)
-          // DE-091 is not defined in cmf.xml
-          .reject(91, "DE-091 is not defined in cmf.xml")
+          .dataField(RESERVED_91)
           .dataField(RESERVED_92)
           .dataField(TRANSACTION_DESTINATION_INSTITUTION_ID_CODE)
           .dataField(TRANSACTION_ORIGINATOR_INSTITUTION_ID_CODE)

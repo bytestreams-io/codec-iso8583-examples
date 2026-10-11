@@ -164,6 +164,7 @@ class CMFMessageTest {
     msg.set(88, new byte[] {(byte) 0x88, (byte) 0x88});
     msg.set(89, new byte[] {(byte) 0x89, (byte) 0x89});
     msg.set(90, new byte[] {(byte) 0x90, (byte) 0x90});
+    msg.set(91, new byte[] {(byte) 0x91, (byte) 0x91});
     msg.set(92, new byte[] {(byte) 0x92, (byte) 0x92});
     msg.set(93, "12345678901");
     msg.set(94, "98765432109");
@@ -205,7 +206,11 @@ class CMFMessageTest {
     tppMsg.set(3, "John");
     tppMsg.set(5, "Doe");
     tppMsg.set(7, "john.doe@example.com");
+    tppMsg.set(34, "Y");
+    tppMsg.set(38, "M");
     tppMsg.set(69, "4000123456789012345678901234567890123456");
+    tppMsg.set(72, "C");
+    tppMsg.set(73, "AGE-VERIFIED-OVER-18");
     msg.set(tppMsg);
     ISOMsg vdMsg = new ISOMsg(49);
     vdMsg.set(2, "0123");
@@ -421,6 +426,8 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {(byte) 0x89, (byte) 0x89});
     assertThat(CMFMessage.RESERVED_90.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x90, (byte) 0x90});
+    assertThat(CMFMessage.RESERVED_91.get(decoded))
+        .isEqualTo(new byte[] {(byte) 0x91, (byte) 0x91});
     assertThat(CMFMessage.RESERVED_92.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x92, (byte) 0x92});
     assertThat(CMFMessage.TRANSACTION_DESTINATION_INSTITUTION_ID_CODE.get(decoded))
@@ -495,7 +502,11 @@ class CMFMessageTest {
     assertThat(tpp.getFirstName()).isEqualTo("John");
     assertThat(tpp.getLastName()).isEqualTo("Doe");
     assertThat(tpp.getEmail()).isEqualTo("john.doe@example.com");
+    assertThat(tpp.getExtendedAuthorizationIndicator()).isEqualTo("Y");
+    assertThat(tpp.getCardholderNameVerificationResult()).isEqualTo("M");
     assertThat(tpp.getCardToken()).isEqualTo("4000123456789012345678901234567890123456");
+    assertThat(tpp.getCryptoCardIndicator()).isEqualTo("C");
+    assertThat(tpp.getAgeVerificationData()).isEqualTo("AGE-VERIFIED-OVER-18");
 
     @SuppressWarnings("unchecked")
     var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
@@ -519,7 +530,7 @@ class CMFMessageTest {
                             + " 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54,"
                             + " 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68, 69, 70, 71,"
                             + " 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,"
-                            + " 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
+                            + " 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103,"
                             + " 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,"
                             + " 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127,"
                             + " 128}"))
@@ -619,6 +630,7 @@ class CMFMessageTest {
         .containsEntry("reserved88", new byte[] {(byte) 0x88, (byte) 0x88})
         .containsEntry("reserved89", new byte[] {(byte) 0x89, (byte) 0x89})
         .containsEntry("reserved90", new byte[] {(byte) 0x90, (byte) 0x90})
+        .containsEntry("reserved91", new byte[] {(byte) 0x91, (byte) 0x91})
         .containsEntry("reserved92", new byte[] {(byte) 0x92, (byte) 0x92})
         .containsEntry("transactionDestinationInstitutionIdCode", "12345678901")
         .containsEntry("transactionOriginatorInstitutionIdCode", "98765432109")
@@ -800,6 +812,7 @@ class CMFMessageTest {
     assertThat(reparsed.getBytes(88)).isEqualTo(new byte[] {(byte) 0x88, (byte) 0x88});
     assertThat(reparsed.getBytes(89)).isEqualTo(new byte[] {(byte) 0x89, (byte) 0x89});
     assertThat(reparsed.getBytes(90)).isEqualTo(new byte[] {(byte) 0x90, (byte) 0x90});
+    assertThat(reparsed.getBytes(91)).isEqualTo(new byte[] {(byte) 0x91, (byte) 0x91});
     assertThat(reparsed.getBytes(92)).isEqualTo(new byte[] {(byte) 0x92, (byte) 0x92});
     assertThat(reparsed.getString(93)).isEqualTo("12345678901");
     assertThat(reparsed.getString(94)).isEqualTo("98765432109");
@@ -826,7 +839,11 @@ class CMFMessageTest {
     assertThat(reparsedTpp.getString(3)).isEqualTo("John");
     assertThat(reparsedTpp.getString(5)).isEqualTo("Doe");
     assertThat(reparsedTpp.getString(7)).isEqualTo("john.doe@example.com");
+    assertThat(reparsedTpp.getString(34)).isEqualTo("Y");
+    assertThat(reparsedTpp.getString(38)).isEqualTo("M");
     assertThat(reparsedTpp.getString(69)).isEqualTo("4000123456789012345678901234567890123456");
+    assertThat(reparsedTpp.getString(72)).isEqualTo("C");
+    assertThat(reparsedTpp.getString(73)).isEqualTo("AGE-VERIFIED-OVER-18");
     assertThat(reparsed.getBytes(114)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x14});
     assertThat(reparsed.getBytes(115)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x15});
     assertThat(reparsed.getBytes(116)).isEqualTo(new byte[] {(byte) 0x11, (byte) 0x16});
