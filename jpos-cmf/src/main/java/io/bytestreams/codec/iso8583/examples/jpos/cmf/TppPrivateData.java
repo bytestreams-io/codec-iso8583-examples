@@ -77,6 +77,11 @@ public class TppPrivateData extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(31, field("presentmentSequenceNumber", CMFCodecs.hex(2)));
   public static final BitmappedFieldSpec<TppPrivateData, String> INTERCHANGE_FEE =
       BitmappedFieldSpec.of(32, field("interchangeFee", Codecs.ascii(Codecs.bcdInt(2))));
+  public static final BitmappedFieldSpec<TppPrivateData, String> EXTENDED_AUTHORIZATION_INDICATOR =
+      BitmappedFieldSpec.of(34, field("extendedAuthorizationIndicator", Codecs.ascii(1)));
+  public static final BitmappedFieldSpec<TppPrivateData, String>
+      CARDHOLDER_NAME_VERIFICATION_RESULT =
+          BitmappedFieldSpec.of(38, field("cardholderNameVerificationResult", Codecs.ascii(1)));
   public static final BitmappedFieldSpec<TppPrivateData, String> REMOTE_ISO_RESULT_CODE =
       BitmappedFieldSpec.of(39, field("remoteIsoResultCode", Codecs.ascii(Codecs.bcdInt(2))));
   public static final BitmappedFieldSpec<TppPrivateData, byte[]> NEW_PIN_BLOCK =
@@ -91,6 +96,10 @@ public class TppPrivateData extends DataObject implements Bitmapped {
       BitmappedFieldSpec.of(70, field("transactionId", CMFCodecs.hex(19)));
   public static final BitmappedFieldSpec<TppPrivateData, String> TRANSACTION_GROUP_ID =
       BitmappedFieldSpec.of(71, field("transactionGroupId", CMFCodecs.hex(19)));
+  public static final BitmappedFieldSpec<TppPrivateData, String> CRYPTO_CARD_INDICATOR =
+      BitmappedFieldSpec.of(72, field("cryptoCardIndicator", Codecs.ascii(1)));
+  public static final BitmappedFieldSpec<TppPrivateData, String> AGE_VERIFICATION_DATA =
+      BitmappedFieldSpec.of(73, field("ageVerificationData", Codecs.ascii(Codecs.bcdInt(3))));
 
   static final Codec<TppPrivateData> CODEC =
       BitmappedCodecBuilder.builder(TppPrivateData::new)
@@ -126,6 +135,8 @@ public class TppPrivateData extends DataObject implements Bitmapped {
           .dataField(TOTAL_RECORDS_FOR_PRESENTMENT)
           .dataField(PRESENTMENT_SEQUENCE_NUMBER)
           .dataField(INTERCHANGE_FEE)
+          .dataField(EXTENDED_AUTHORIZATION_INDICATOR)
+          .dataField(CARDHOLDER_NAME_VERIFICATION_RESULT)
           .dataField(REMOTE_ISO_RESULT_CODE)
           .dataField(NEW_PIN_BLOCK)
           .dataField(KSN_FOR_NEW_PIN_BLOCK)
@@ -133,6 +144,8 @@ public class TppPrivateData extends DataObject implements Bitmapped {
           .dataField(CARD_TOKEN)
           .dataField(TRANSACTION_ID)
           .dataField(TRANSACTION_GROUP_ID)
+          .dataField(CRYPTO_CARD_INDICATOR)
+          .dataField(AGE_VERIFICATION_DATA)
           .build();
 
   public TppPrivateData() {
@@ -268,6 +281,14 @@ public class TppPrivateData extends DataObject implements Bitmapped {
     return INTERCHANGE_FEE.get(this);
   }
 
+  public String getExtendedAuthorizationIndicator() {
+    return EXTENDED_AUTHORIZATION_INDICATOR.get(this);
+  }
+
+  public String getCardholderNameVerificationResult() {
+    return CARDHOLDER_NAME_VERIFICATION_RESULT.get(this);
+  }
+
   public String getRemoteIsoResultCode() {
     return REMOTE_ISO_RESULT_CODE.get(this);
   }
@@ -294,5 +315,13 @@ public class TppPrivateData extends DataObject implements Bitmapped {
 
   public String getTransactionGroupId() {
     return TRANSACTION_GROUP_ID.get(this);
+  }
+
+  public String getCryptoCardIndicator() {
+    return CRYPTO_CARD_INDICATOR.get(this);
+  }
+
+  public String getAgeVerificationData() {
+    return AGE_VERIFICATION_DATA.get(this);
   }
 }
