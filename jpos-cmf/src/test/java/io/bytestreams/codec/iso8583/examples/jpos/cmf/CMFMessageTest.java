@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.jpos.iso.ISOMsg;
@@ -60,11 +61,14 @@ class CMFMessageTest {
     msg.set(25, "1403");
     msg.set(26, "5411");
     org.jpos.iso.PosCapability jposPosCapability =
-        new org.jpos.iso.PosCapability(
-            org.jpos.iso.PosCapability.ReadingCapability.ICC.intValue(),
-            org.jpos.iso.PosCapability.VerificationCapability.ONLINE_PIN.intValue());
+        org.jpos.iso.PosCapability.builder()
+            .readingCapability(org.jpos.iso.PosDataCode.ReadingMethod.ICC)
+            .verificationCapability(org.jpos.iso.PosDataCode.VerificationMethod.ONLINE_PIN)
+            .build();
+    // jPOS 3.0.2 PosCapability spans all of DE-027 (27 bytes); CMF subfield 0 is its first 8 bytes
+    byte[] jposCapabilityBits = Arrays.copyOf(jposPosCapability.getBytes(), 8);
     ISOMsg posCapMsg = new ISOMsg(27);
-    posCapMsg.set(0, jposPosCapability.getBytes());
+    posCapMsg.set(0, jposCapabilityBits);
     posCapMsg.set(1, "6");
     posCapMsg.set(2, "200");
     posCapMsg.set(3, "200");
@@ -696,7 +700,7 @@ class CMFMessageTest {
     assertThat(reparsed.getString(25)).isEqualTo("1403");
     assertThat(reparsed.getString(26)).isEqualTo("5411");
     ISOMsg reparsedPosCap = (ISOMsg) reparsed.getComponent(27);
-    assertThat(reparsedPosCap.getBytes(0)).isEqualTo(jposPosCapability.getBytes());
+    assertThat(reparsedPosCap.getBytes(0)).isEqualTo(jposCapabilityBits);
     assertThat(reparsedPosCap.getString(1)).isEqualTo("6");
     assertThat(reparsedPosCap.getString(2)).isEqualTo("200");
     assertThat(reparsedPosCap.getString(3)).isEqualTo("200");
