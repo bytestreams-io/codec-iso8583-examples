@@ -17,7 +17,7 @@ import org.jpos.iso.ISOMsg;
 import org.jpos.iso.packager.GenericPackager;
 import org.junit.jupiter.api.Test;
 
-class CMFMessageTest {
+class CMFV1MessageTest {
 
   @Test
   void decodePanFromJposPackedMessage() throws Exception {
@@ -222,7 +222,7 @@ class CMFMessageTest {
 
     byte[] packed = msg.pack();
 
-    CMFMessage decoded = CMFMessage.CODEC.decode(new ByteArrayInputStream(packed));
+    CMFV1Message decoded = CMFV1Message.CODEC.decode(new ByteArrayInputStream(packed));
     assertThat(CMFMessage.MTI.get(decoded)).isEqualTo("0100");
     assertThat(CMFMessage.PAN.get(decoded)).isEqualTo("400012345678901");
     ProcessingCode pc = CMFMessage.PROCESSING_CODE.get(decoded);
@@ -323,7 +323,7 @@ class CMFMessageTest {
         .isEqualTo("12345678901234567890123");
     assertThat(CMFMessage.ACQUIRER_INSTITUTION_ID_CODE.get(decoded)).isEqualTo("123456789");
     assertThat(CMFMessage.FORWARDING_INSTITUTION_ID_CODE.get(decoded)).isEqualTo("987654321");
-    assertThat(CMFMessage.ELECTRONIC_COMMERCE_DATA.get(decoded))
+    assertThat(CMFV1Message.ELECTRONIC_COMMERCE_DATA.get(decoded))
         .isEqualTo(new byte[] {0x01, 0x02, 0x03});
     assertThat(CMFMessage.TRACK2_DATA.get(decoded)).isEqualTo("4000123456789012=2612101");
     assertThat(CMFMessage.TRACK3_DATA.get(decoded)).isEqualTo("TRACK3TESTDATA");
@@ -333,19 +333,19 @@ class CMFMessageTest {
     assertThat(CMFMessage.SERVICE_CODE.get(decoded)).isEqualTo("101");
     assertThat(CMFMessage.CARD_ACCEPTOR_TERMINAL_ID.get(decoded)).isEqualTo("TERM0001        ");
     assertThat(CMFMessage.CARD_ACCEPTOR_ID_CODE.get(decoded)).isEqualTo("MERCHANT123456789");
-    CardAcceptorNameLocation cal = CMFMessage.CARD_ACCEPTOR_NAME_LOCATION.get(decoded);
+    CardAcceptorNameLocation cal = CMFV1Message.CARD_ACCEPTOR_NAME_LOCATION.get(decoded);
     assertThat(cal.getName()).isEqualTo("My Store");
     assertThat(cal.getCity()).isEqualTo("Springfield");
     assertThat(cal.getCountryCode()).isEqualTo("840");
     assertThat(CardAcceptorNameLocation.EMAIL.get(cal)).isEqualTo("store@example.com");
-    assertThat(CMFMessage.ADDITIONAL_RESPONSE_DATA.get(decoded))
+    assertThat(CMFV1Message.ADDITIONAL_RESPONSE_DATA.get(decoded))
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04});
     assertThat(CMFMessage.TRACK1_DATA.get(decoded))
         .isEqualTo("%B4000123456789012^CARDHOLDER/TEST^2612101");
     assertThat(CMFMessage.AMOUNTS_FEES.get(decoded)).isEqualTo("FEESDATA");
     assertThat(CMFMessage.ADDITIONAL_DATA_NATIONAL.get(decoded)).isEqualTo("NATIONALDATA");
     assertThat(CMFMessage.ADDITIONAL_DATA_PRIVATE.get(decoded)).isEqualTo("PRIVATEDATA");
-    VerificationData vd = CMFMessage.VERIFICATION_DATA.get(decoded);
+    VerificationData vd = CMFV1Message.VERIFICATION_DATA.get(decoded);
     assertThat(vd.getCardVerificationData()).isEqualTo("0123");
     assertThat(vd.getCardholderBillingAddressCompressed()).isEqualTo("1234 MAIN ST    ");
     assertThat(vd.getCardholderBillingPostalCode()).isEqualTo("12345     ");
@@ -353,13 +353,13 @@ class CMFMessageTest {
         .isEqualTo("1234 MAIN STREET                        ");
     assertThat(vd.getAddressVerificationResultCode()).isEqualTo("Y");
     assertThat(CMFMessage.RESERVED_50.get(decoded)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C});
-    assertThat(CMFMessage.RESERVED_51.get(decoded)).isEqualTo(new byte[] {0x0D, 0x0E, 0x0F});
+    assertThat(CMFV1Message.RESERVED_51.get(decoded)).isEqualTo(new byte[] {0x0D, 0x0E, 0x0F});
     assertThat(CMFMessage.PIN_DATA.get(decoded))
         .isEqualTo(new byte[] {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
     assertThat(CMFMessage.SECURITY_RELATED_CONTROL_INFORMATION.get(decoded))
         .isEqualTo(new byte[] {0x11, 0x22, 0x33});
     assertThat(CMFMessage.AMOUNTS_ADDITIONAL.get(decoded)).isEqualTo("ADDITIONALAMOUNTS");
-    assertThat(CMFMessage.IC_SYSTEM_RELATED_DATA.get(decoded))
+    assertThat(CMFV1Message.IC_SYSTEM_RELATED_DATA.get(decoded))
         .isEqualTo(
             new byte[] {(byte) 0x9F, 0x26, 0x08, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08});
     assertThat(CMFMessage.ORIGINAL_DATA_ELEMENTS.get(decoded))
@@ -381,7 +381,7 @@ class CMFMessageTest {
         .isEqualTo("BATCH FILE TRANSFER CONTROL DATA 12345  ");
     assertThat(CMFMessage.FILE_TRANSFER_DESCRIPTION_DATA.get(decoded))
         .isEqualTo("123456789012345678");
-    assertThat(CMFMessage.RESERVED_71.get(decoded)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
+    assertThat(CMFV1Message.RESERVED_71.get(decoded)).isEqualTo(new byte[] {0x01, 0x02, 0x03});
     assertThat(CMFMessage.DATA_RECORD.get(decoded)).isEqualTo(new byte[] {0x0A, 0x0B, 0x0C, 0x0D});
     assertThat(CMFMessage.DATE_ACTION.get(decoded)).isEqualTo(LocalDate.of(2026, 1, 1));
     ReconciliationDataPrimary rdp = CMFMessage.RECONCILIATION_DATA_PRIMARY.get(decoded);
@@ -450,7 +450,7 @@ class CMFMessageTest {
         .isEqualTo("4000123456789012345678");
     assertThat(CMFMessage.ACCOUNT_IDENTIFICATION_2.get(decoded))
         .isEqualTo("5500987654321098765432");
-    assertThat(CMFMessage.TRANSACTION_SPECIFIC_DATA.get(decoded))
+    assertThat(CMFV1Message.TRANSACTION_SPECIFIC_DATA.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x10, (byte) 0x04});
     assertThat(CMFMessage.RESERVED_105.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x10, (byte) 0x05});
@@ -497,7 +497,7 @@ class CMFMessageTest {
         .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x27});
     assertThat(CMFMessage.MESSAGE_AUTHENTICATION_CODE_2.get(decoded))
         .isEqualTo(new byte[] {(byte) 0x12, (byte) 0x28, (byte) 0x12, (byte) 0x28});
-    TppPrivateData tpp = CMFMessage.TPP_PRIVATE_DATA.get(decoded);
+    TppPrivateData tpp = CMFV1Message.TPP_PRIVATE_DATA.get(decoded);
     assertThat(tpp.getVersion()).isEqualTo("1.0");
     assertThat(tpp.getFirstName()).isEqualTo("John");
     assertThat(tpp.getLastName()).isEqualTo("Doe");
@@ -509,7 +509,7 @@ class CMFMessageTest {
     assertThat(tpp.getAgeVerificationData()).isEqualTo("AGE-VERIFIED-OVER-18");
 
     @SuppressWarnings("unchecked")
-    var inspected = (Map<String, Object>) Inspector.inspect(CMFMessage.CODEC, decoded);
+    var inspected = (Map<String, Object>) Inspector.inspect(CMFV1Message.CODEC, decoded);
     var processingCodeMap = Map.of("transactionType", "00", "fromAccount", "30", "toAccount", "10");
     var amountMap = Map.of("currencyCode", "840", "decimalPlaces", 2, "amount", 1000L);
     var reconAmountMap = Map.of("currencyCode", "978", "decimalPlaces", 2, "amount", 5000L);
@@ -674,7 +674,7 @@ class CMFMessageTest {
             new byte[] {(byte) 0x12, (byte) 0x28, (byte) 0x12, (byte) 0x28});
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    CMFMessage.CODEC.encode(decoded, out);
+    CMFV1Message.CODEC.encode(decoded, out);
     assertThat(out.toByteArray()).isEqualTo(packed);
 
     ISOMsg reparsed = new ISOMsg();
